@@ -31,6 +31,9 @@ content:
       - name: oem
         label: OEM Part Number
         type: string
+      - name: image
+        label: Product Image
+        type: image
       - name: images
         label: Product Images
         type: image
