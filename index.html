@@ -1,1 +1,150 @@
 
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Global Turbo & Engine Parts Supplier</title>
+<meta name="description" content="Genuine turbochargers, Cummins engines and diesel engine parts supplier. Worldwide export and WhatsApp inquiries.">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:Arial,sans-serif;color:#222;background:#f7f7f7;line-height:1.6}
+header{background:#171717;color:white;padding:20px 6%;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:15px}
+.logo{font-size:21px;font-weight:bold}
+.logo span{color:#e52b32}
+nav a{color:white;text-decoration:none;margin-left:20px;font-size:14px}
+.hero{background:linear-gradient(120deg,#171717,#4a1719);color:white;padding:85px 7%;text-align:left}
+.hero h1{font-size:clamp(32px,5vw,52px);max-width:750px;line-height:1.15}
+.hero p{margin:20px 0;color:#ddd;font-size:17px;max-width:650px}
+.btn{display:inline-block;background:#df2932;color:white;padding:13px 23px;text-decoration:none;border-radius:5px;font-weight:bold;margin-top:12px}
+section{padding:55px 6%}
+.section-title{text-align:center;margin-bottom:30px}
+.section-title h2{font-size:30px}
+.section-title p{color:#777;margin-top:8px}
+.categories{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:18px}
+.category{background:white;padding:25px;border-radius:8px;border:1px solid #eee}
+.category h3{margin-bottom:8px;color:#b51e27}
+.category p{color:#666;font-size:14px}
+.products{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:22px}
+.product{background:white;border-radius:8px;overflow:hidden;border:1px solid #eee}
+.product img{width:100%;height:210px;object-fit:cover;background:#eee}
+.product-info{padding:18px}
+.product-info h3{font-size:18px;margin-bottom:8px}
+.product-info p{font-size:14px;color:#666;margin-bottom:8px}
+.product-info a{color:#c5222c;font-weight:bold;text-decoration:none}
+.about{background:#202020;color:white}
+.about p{max-width:850px;margin:15px auto;color:#ddd;text-align:center}
+.contact{text-align:center;background:#f0f0f0}
+footer{background:#151515;color:#bbb;text-align:center;padding:25px;font-size:13px}
+.empty{grid-column:1/-1;text-align:center;color:#777;padding:30px}
+@media(max-width:600px){header{display:block}nav{margin-top:15px}nav a{margin:0 12px 0 0}.hero{padding:60px 6%}}
+</style>
+</head>
+<body>
+<header>
+  <div class="logo">GLOBAL <span>TURBO</span></div>
+  <nav>
+    <a href=" ">Home</a >
+    <a href="#products">Products</a >
+    <a href="#about">About Us</a >
+    <a href="#contact">Contact</a >
+  </nav>
+</header>
+
+<div class="hero" id="home">
+  <h1>Genuine Turbochargers & Diesel Engine Parts Supplier</h1>
+  <p>Professional supplier of Cummins engines, Holset turbochargers and industrial engine parts. Worldwide export support and reliable service.</p >
+  <a class="btn" href="#products">Explore Products</a >
+  <a class="btn" href="#contact">Contact Us</a >
+</div>
+
+<section>
+  <div class="section-title">
+    <h2>Our Product Categories</h2>
+    <p>Parts and solutions for diesel engines and industrial applications</p >
+  </div>
+  <div class="categories">
+    <div class="category"><h3>Turbochargers</h3><p>Holset, Garrett and other turbocharger brands.</p ></div>
+    <div class="category"><h3>Cummins Engines</h3><p>Diesel engines and genuine engine assemblies.</p ></div>
+    <div class="category"><h3>Engine Parts</h3><p>OEM and aftermarket diesel engine parts.</p ></div>
+    <div class="category"><h3>Industrial Parts</h3><p>Parts for construction and industrial machinery.</p ></div>
+  </div>
+</section>
+
+<section id="products">
+  <div class="section-title">
+    <h2>Featured Products</h2>
+    <p>Contact us for availability and quotations</p >
+  </div>
+  <div class="products" id="product-list">
+    <div class="empty">Loading products...</div>
+  </div>
+</section>
+
+<section class="about" id="about">
+  <div class="section-title"><h2>About Our Company</h2></div>
+  <p>We focus on the export of genuine turbochargers, Cummins diesel engines and engine parts. We support international customers with product sourcing, professional service and worldwide shipping.</p >
+</section>
+
+<section class="contact" id="contact">
+  <div class="section-title">
+    <h2>Request a Quote</h2>
+    <p>Send us your part number, engine model and required quantity.</p >
+    <a class="btn" id="main-whatsapp" href="https://wa.me/" target="_blank">Contact Us on WhatsApp</a >
+  </div>
+</section>
+
+<footer>© 2026 Global Turbo & Engine Parts Supplier. All Rights Reserved.</footer>
+
+<script>
+const WHATSAPP_NUMBER = "YOUR_WHATSAPP_NUMBER";
+
+function askWhatsApp(productName) {
+  const message = "Hello, I would like to inquire about: " + productName;
+  const url = "https://wa.me/" + WHATSAPP_NUMBER + "?text=" + encodeURIComponent(message);
+  window.open(url, "_blank");
+}
+
+fetch("data/products.json")
+.then(response => {
+  if (!response.ok) throw new Error("No product data");
+  return response.json();
+})
+.then(products => {
+  const list = document.getElementById("product-list");
+  list.innerHTML = "";
+  if (!Array.isArray(products) || products.length === 0) {
+    list.innerHTML = '<div class="empty">New products coming soon.</div>';
+    return;
+  }
+  products.forEach(product => {
+    const card = document.createElement("div");
+    card.className = "product";
+    const img = document.createElement("img");
+    img.src = product.image || "";
+    img.alt = product.name || "Product";
+    const info = document.createElement("div");
+    info.className = "product-info";
+    const title = document.createElement("h3");
+    title.textContent = product.name || "Product";
+    const number = document.createElement("p");
+    number.textContent = "Part Number: " + (product.part_number || "Contact us");
+    const description = document.createElement("p");
+    description.textContent = product.description || "";
+    const link = document.createElement("a");
+    link.href = "#contact";
+    link.textContent = "Send Inquiry →";
+    link.addEventListener("click", () => askWhatsApp(product.name || "Product"));
+    info.append(title, number, description, link);
+    card.append(img, info);
+    list.append(card);
+  });
+})
+.catch(() => {
+  document.getElementById("product-list").innerHTML =
+    '<div class="empty">Products will be displayed here soon.</div>';
+});
+</script>
+</body>
+</html>
+
