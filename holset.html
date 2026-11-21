@@ -172,20 +172,60 @@
 
   <footer>Global Turbo Supplier | Worldwide Export</footer>
   <script>
-function changeImage(button, direction) {
-  const gallery = button.parentElement;
-  const images = gallery.querySelectorAll(".gallery-image");
-  let current = Number(gallery.dataset.index || 0);
+document.addEventListener("DOMContentLoaded", async function() {
+  const gallery = document.querySelector(".product-gallery");
 
-  const imageList = [
-    "/media/微信图片_20260903154321_3010_4.jpg"
-  ];
+  if (!gallery) return;
 
-  current = (current + direction + imageList.length) % imageList.length;
+  try {
+    const response = await fetch("/products/turbo.json");
 
-  gallery.dataset.index = current;
-  images[0].src = imageList[current];
-}
+    if (!response.ok) {
+      throw new Error("Product data could not be loaded");
+    }
+
+    const product = await response.json();
+
+    const imageList = [
+      product.image,
+      ...(Array.isArray(product.images) ? product.images : [])
+    ].filter(Boolean);
+
+    if (imageList.length === 0) return;
+
+    let current = 0;
+    const image = gallery.querySelector(".gallery-image");
+
+    function showImage(index) {
+      current = (index + imageList.length) % imageList.length;
+      image.src = imageList[current];
+      gallery.dataset.index = current;
+    }
+
+    window.changeImage = function(button, direction) {
+      showImage(current + direction);
+    };
+
+    showImage(0);
+
+    let startX = 0;
+
+    gallery.addEventListener("touchstart", function(event) {
+      startX = event.touches[0].clientX;
+    });
+
+    gallery.addEventListener("touchend", function(event) {
+      const distance = event.changedTouches[0].clientX - startX;
+
+      if (Math.abs(distance) > 50) {
+        showImage(current + (distance < 0 ? 1 : -1));
+      }
+    });
+
+  } catch (error) {
+    console.error("Image gallery error:", error);
+  }
+});
 </script>
 </body>
 </html>
