@@ -68,6 +68,46 @@
       color: #777;
     }
   </style>
+  <style>
+.product-gallery {
+  position: relative;
+  width: 100%;
+  height: 260px;
+  background: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  touch-action: pan-y;
+}
+
+.gallery-image {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.gallery-prev,
+.gallery-next {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  background: rgba(0,0,0,0.65);
+  color: white;
+  border: none;
+  padding: 10px 14px;
+  cursor: pointer;
+  z-index: 2;
+}
+
+.gallery-prev {
+  left: 10px;
+}
+
+.gallery-next {
+  right: 10px;
+}
+</style>
 </head>
 <body>
   <header>
@@ -87,11 +127,17 @@
       <div class="product">
         <h2>Holset HX35</h2> 
         
-<img
- src="/media/微信图片_20260903154321_3010_4.jpg"
-  alt="Holset HX35 Turbocharger"
-   style="width:100%;height:220px;object-fit:contain;background:#fff;"
->
+<div class="product-gallery">
+  <button class="gallery-prev" onclick="changeImage(this, -1)">❮</button>
+
+  <img
+    src="/media/微信图片_20260903154321_3010_4.jpg"
+    alt="Holset HX35 Turbocharger"
+    class="gallery-image"
+  >
+
+  <button class="gallery-next" onclick="changeImage(this, 1)">❯</button>
+</div>
 
         <p>Brand: Holset</p >
 <p>Model: HX35</p >
@@ -125,6 +171,22 @@
   </main>
 
   <footer>Global Turbo Supplier | Worldwide Export</footer>
+  <script>
+function changeImage(button, direction) {
+  const gallery = button.parentElement;
+  const images = gallery.querySelectorAll(".gallery-image");
+  let current = Number(gallery.dataset.index || 0);
+
+  const imageList = [
+    "/media/微信图片_20260903154321_3010_4.jpg"
+  ];
+
+  current = (current + direction + imageList.length) % imageList.length;
+
+  gallery.dataset.index = current;
+  images[0].src = imageList[current];
+}
+</script>
 </body>
 </html>
 
