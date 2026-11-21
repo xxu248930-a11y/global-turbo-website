@@ -37,7 +37,9 @@ content:
       - name: images
         label: Product Images
         type: image
-        list: true
+        options:
+          multiple:
+            max: 10
       - name: whatsapp
         label: WhatsApp Inquiry
         type: string
