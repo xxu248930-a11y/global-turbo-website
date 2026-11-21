@@ -43,3 +43,55 @@ content:
       - name: whatsapp
         label: WhatsApp Inquiry
         type: string
+      - name: oem_numbers
+        label: All OEM Part Numbers
+        type: string
+        list: true
+
+      - name: reference_numbers
+        label: Reference Numbers
+        type: string
+        list: true
+
+      - name: interchange_numbers
+        label: Interchange Numbers
+        type: string
+        list: true
+
+      - name: engine_models
+        label: Engine Models
+        type: string
+        list: true
+
+      - name: applications
+        label: Applications
+        type: string
+        list: true
+
+      - name: origin
+        label: Country of Origin
+        type: string
+
+      - name: condition
+        label: Product Condition
+        type: string
+
+      - name: warranty
+        label: Warranty
+        type: text
+
+      - name: description
+        label: Full Product Description
+        type: rich-text
+
+      - name: technical_specs
+        label: Technical Specifications
+        type: object
+        list: true
+        fields:
+          - name: parameter
+            label: Parameter
+            type: string
+          - name: value
+            label: Value
+            type: string
