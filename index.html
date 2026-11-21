@@ -113,6 +113,10 @@ fetch("products/turbo.json")
 .then(products => {
   const list = document.getElementById("product-list");
   list.innerHTML = "";
+  if (products && !Array.isArray(products)) {
+  products = [products];
+}
+  
   if (!Array.isArray(products) || products.length === 0) {
     list.innerHTML = '<div class="empty">New products coming soon.</div>';
     return;
