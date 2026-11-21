@@ -128,7 +128,7 @@ fetch("products/turbo.json")
     const title = document.createElement("h3");
     title.textContent = product.name || "Product";
     const number = document.createElement("p");
-    number.textContent = "Part Number: " + (product.part_number || "Contact us");
+    number.textContent = "Part Number: " + (product.oem || "Contact us");
     const description = document.createElement("p");
     description.textContent = product.description || "";
     const link = document.createElement("a");
