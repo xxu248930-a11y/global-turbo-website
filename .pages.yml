@@ -1,0 +1,42 @@
+
+media:
+  input: media
+  output: /media
+
+content:
+  - name: products
+    label: Products
+    type: collection
+    path: products
+    filename: "{primary}.json"
+    format: json
+    fields:
+      - name: name
+        label: Product Name
+        type: string
+        required: true
+      - name: brand
+        label: Brand
+        type: select
+        options:
+          values:
+            - Cummins
+            - Holset
+            - Garrett
+            - BorgWarner
+            - Other
+      - name: model
+        label: Model
+        type: string
+      - name: oem
+        label: OEM Part Number
+        type: string
+      - name: image
+        label: Product Image
+        type: image
+      - name: description
+        label: Description
+        type: text
+      - name: whatsapp
+        label: WhatsApp Inquiry
+        type: string
