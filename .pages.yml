@@ -5,17 +5,14 @@ media:
   output: /media
 
 content:
-  # 品牌资料库
+
+  # 1. 品牌管理
   - name: brands
     label: Brands（品牌管理）
     type: collection
     path: brands
     filename: "{primary}.json"
     format: json
-    view:
-      primary: name
-      fields:
-        - name
     fields:
       - name: name
         label: Brand Name
@@ -28,7 +25,23 @@ content:
         label: Brand Logo
         type: image
 
-  # 产品资料库
+  # 2. 产品分类管理
+  - name: categories
+    label: Categories（产品分类）
+    type: collection
+    path: categories
+    filename: "{primary}.json"
+    format: json
+    fields:
+      - name: name
+        label: Category Name
+        type: string
+        required: true
+      - name: description
+        label: Category Description
+        type: text
+
+  # 3. 统一产品管理
   - name: products
     label: Products（产品管理）
     type: collection
@@ -40,66 +53,91 @@ content:
         label: Product Name
         type: string
         required: true
+
       - name: brand
         label: Brand
-        type: select
+        type: reference
+        required: true
         options:
-          values:
-            - Cummins
-            - Holset
-            - Garrett
-            - BorgWarner
-            - Other
+          collection: brands
+          search: "name"
+          value: "{primary}"
+          label: "{primary}"
+
+      - name: category
+        label: Product Category
+        type: reference
+        required: true
+        options:
+          collection: categories
+          search: "name"
+          value: "{primary}"
+          label: "{primary}"
+
       - name: model
         label: Model
         type: string
+
       - name: oem
         label: OEM Part Number
         type: string
+
       - name: image
         label: Product Image
         type: image
+
       - name: images
         label: Product Images
         type: image
         options:
           multiple:
             max: 10
+
       - name: whatsapp
         label: WhatsApp Inquiry
         type: string
+
       - name: oem_numbers
         label: All OEM Part Numbers
         type: string
         list: true
+
       - name: reference_numbers
         label: Reference Numbers
         type: string
         list: true
+
       - name: interchange_numbers
         label: Interchange Numbers
         type: string
         list: true
+
       - name: engine_models
         label: Engine Models
         type: string
         list: true
+
       - name: applications
         label: Applications
         type: string
         list: true
+
       - name: origin
         label: Country of Origin
         type: string
+
       - name: condition
         label: Product Condition
         type: string
+
       - name: warranty
         label: Warranty
         type: text
+
       - name: description
         label: Full Product Description
         type: rich-text
+
       - name: technical_specs
         label: Technical Specifications
         type: object
