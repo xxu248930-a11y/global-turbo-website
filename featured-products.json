@@ -1,3 +1,19 @@
 
 
-[]
+[
+  {
+    "name": "Holset HX35 Turbocharger",
+    "brand": "Holset",
+    "model": "HX35",
+    "oem": "2835040, 3790293, 3790294, 4033239, 403323900, 403323900H",
+    "image": "/media/微信图片_20260903154321_3010_4-5.jpg",
+    "url": "holset-hx35.html"
+  },
+  {
+    "name": "Deutz K27 Turbocharger",
+    "brand": "Holset",
+    "model": "K27",
+    "oem": "53279886012",
+    "image": "/media/微信图片_2026-11-20_163710_866.jpg"
+  }
+]
