@@ -1,1 +1,85 @@
 
+name: Build Product Index
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'products/*.json'
+      - 'products/**/*.json'
+      - '.github/workflows/build-product-index.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Get repository files
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Generate product index
+        run: |
+          node <<'NODE'
+          const fs = require("fs");
+          const path = require("path");
+
+          const folder = "products";
+          const products = [];
+
+          function readProducts(dir) {
+            if (!fs.existsSync(dir)) return;
+
+            for (const item of fs.readdirSync(dir, { withFileTypes: true })) {
+              const fullPath = path.join(dir, item.name);
+
+              if (item.isDirectory()) {
+                readProducts(fullPath);
+                continue;
+              }
+
+              if (!item.isFile() || !item.name.endsWith(".json")) {
+                continue;
+              }
+
+              try {
+                const data = JSON.parse(fs.readFileSync(fullPath, "utf8"));
+
+                if (data && typeof data === "object" && !Array.isArray(data)) {
+                  products.push(data);
+                }
+              } catch (error) {
+                console.log("Skipped invalid JSON:", fullPath);
+              }
+            }
+          }
+
+          readProducts(folder);
+
+          fs.writeFileSync(
+            "products-index.json",
+            JSON.stringify(products, null, 2) + "\n"
+          );
+
+          console.log("Total products indexed:", products.length);
+          NODE
+
+      - name: Save generated index
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add products-index.json
+
+          if git diff --cached --quiet; then
+            echo "Product index is already up to date."
+          else
+            git commit -m "Automatically update product index"
+            git push
+          fi
+
