@@ -107,10 +107,10 @@ td:first-child {
 </div>
 
     <div class="info">
-      <h1>Holset HX35 Turbocharger</h1>
-      <p><strong>Brand:</strong> Holset</p >
-      <p><strong>Model:</strong> HX35</p >
-      <p><strong>OEM Part Number:</strong> 2835039</p >
+      <h1 id="productName">Holset HX35 Turbocharger</h1>
+     <p><strong>Brand:</strong> <span id="productBrand">Holset</span></p >
+     <p><strong>Model:</strong> <span id="productModel">HX35</span></p >
+     <p><strong>OEM Part Number:</strong> <span id="productOEM">2835039</span></p >
 
       <h3>Product Overview</h3>
       <p>Original Holset HX35 turbocharger. Contact us for product details, compatibility and availability.</p >
@@ -149,6 +149,11 @@ fetch('/products/turbo.json')
   .then(product => {
     const mainImage = document.getElementById('mainImage');
     const thumbnails = document.getElementById('thumbnails');
+    // Automatically display product information
+document.getElementById('productName').textContent = product.name || '';
+document.getElementById('productBrand').textContent = product.brand || '';
+document.getElementById('productModel').textContent = product.model || '';
+document.getElementById('productOEM').textContent = product.oem || '';
 
     if (!mainImage || !thumbnails) return;
 
