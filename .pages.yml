@@ -149,3 +149,22 @@ content:
           - name: value
             label: Value
             type: string
+            
+  # 4. 独立首页精选产品管理
+  - name: featured_products
+    label: Featured Products（首页精选产品）
+    type: file
+    path: featured-products.json
+    format: json
+    list: true
+    fields:
+      - name: model
+        label: Product Model（产品型号）
+        type: string
+        required: true
+
+      - name: image
+        label: Product Image（产品图片）
+        type: image
+        required: true
+
