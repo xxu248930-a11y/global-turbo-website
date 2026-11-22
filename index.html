@@ -169,49 +169,62 @@ function askWhatsApp(productName) {
   window.open(url, "_blank");
 }
 
-fetch("products/turbo.json")
-.then(response => {
-  if (!response.ok) throw new Error("No product data");
-  return response.json();
-})
-.then(products => {
-  const list = document.getElementById("product-list");
-  list.innerHTML = "";
-  if (products && !Array.isArray(products)) {
-  products = [products];
-}
-  
-  if (!Array.isArray(products) || products.length === 0) {
-    list.innerHTML = '<div class="empty">New products coming soon.</div>';
-    return;
-  }
-  products.forEach(product => {
-    const card = document.createElement("div");
-    card.className = "product";
-    const img = document.createElement("img");
-    img.src = product.image || "";
-    img.alt = product.name || "Product";
-    const info = document.createElement("div");
-    info.className = "product-info";
-    const title = document.createElement("h3");
-    title.textContent = product.name || "Product";
-    const number = document.createElement("p");
-    number.textContent = "Part Number: " + (product.oem || "Contact us");
-    const description = document.createElement("p");
-    description.textContent = product.description || "";
-    const link = document.createElement("a");
-    link.href = "#contact";
-    link.textContent = "Send Inquiry →";
-    link.addEventListener("click", () => askWhatsApp(product.name || "Product"));
-    info.append(title, number, description, link);
-    card.append(img, info);
-    list.append(card);
+
+fetch("featured-products.json")
+  .then(response => {
+    if (!response.ok) {
+      throw new Error("Featured products not found");
+    }
+    return response.json();
+  })
+  .then(products => {
+    const list = document.getElementById("featured-product-list");
+    list.innerHTML = "";
+
+    if (!Array.isArray(products) || products.length === 0) {
+      list.innerHTML =
+        '<div class="empty">Featured products coming soon.</div>';
+      return;
+    }
+
+    products.slice(0, 6).forEach(product => {
+      const card = document.createElement("div");
+      card.className = "featured-card";
+
+      const img = document.createElement("img");
+      img.src = product.image || "";
+      img.alt = product.name || "Featured Product";
+
+      const title = document.createElement("h3");
+      title.textContent = product.name || "Product";
+
+      const brand = document.createElement("p");
+      brand.textContent = "Brand: " + (product.brand || "Contact us");
+
+      const model = document.createElement("p");
+      model.textContent = "Model: " + (product.model || "Contact us");
+
+      const oem = document.createElement("p");
+      oem.textContent = "OEM: " + (product.oem || "Contact us");
+
+      const link = document.createElement("a");
+      link.href = product.url ||
+        "https://wa.me/8617377554610?text=" +
+        encodeURIComponent("I am interested in " + (product.name || "this product"));
+      link.target = "_blank";
+      link.rel = "noopener";
+      link.textContent = product.url ? "View Details →" : "Request a Quote →";
+
+      card.append(img, title, brand, model, oem, link);
+      list.appendChild(card);
+    });
+  })
+  .catch(error => {
+    console.error("Featured products loading error:", error);
+    document.getElementById("featured-product-list").innerHTML =
+      '<div class="empty">Featured products are temporarily unavailable.</div>';
   });
-})
-.catch(() => {
-  document.getElementById("product-list").innerHTML =
-    '<div class="empty">Products will be displayed here soon.</div>';
-});
+
 </script>
 
  <script src="/watermark.js" defer></script>
