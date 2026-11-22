@@ -129,10 +129,15 @@ td:first-child {
 
     <h2>Technical Specifications</h2>
     <table>
-      <tr><td>Brand</td><td>Holset</td></tr>
-      <tr><td>Model</td><td>HX35</td></tr>
-      <tr><td>Product Condition</td><td>Contact us for details</td></tr>
-    </table>
+  <thead>
+    <tr>
+      <th>Parameter</th>
+      <th>Specification</th>
+    </tr>
+  </thead>
+  <tbody id="technicalSpecs">
+  </tbody>
+</table>
 
     <h2>Applications</h2>
     <p>Contact us with your engine model and part number to confirm compatibility.</p >
@@ -154,6 +159,28 @@ document.getElementById('productName').textContent = product.name || '';
 document.getElementById('productBrand').textContent = product.brand || '';
 document.getElementById('productModel').textContent = product.model || '';
 document.getElementById('productOEM').textContent = product.oem || '';
+
+// Automatically display technical specifications
+const technicalSpecs = document.getElementById('technicalSpecs');
+
+if (technicalSpecs && Array.isArray(product.technical_specs)) {
+  technicalSpecs.innerHTML = '';
+
+  product.technical_specs.forEach(spec => {
+    const row = document.createElement('tr');
+
+    const parameterCell = document.createElement('td');
+    parameterCell.textContent = spec.parameter || '';
+
+    const valueCell = document.createElement('td');
+    valueCell.textContent = spec.value || '';
+
+    row.appendChild(parameterCell);
+    row.appendChild(valueCell);
+    technicalSpecs.appendChild(row);
+  });
+}
+
 
     if (!mainImage || !thumbnails) return;
 
