@@ -97,16 +97,14 @@ td:first-child {
 
   <div class="product">
     <div>
-      <img id="mainImage"
-        class="main-image"
-        src="/media/微信图片_20260903154321_3010_4.jpg"
-        alt="Holset HX35 Turbocharger">
+  <img
+    id="mainImage"
+    class="main-image"
+    src="/media/微信图片_20260903154321_3010_4-5.jpg"
+    alt="Holset HX35 Turbocharger">
 
-      <div class="thumbnails">
-        <img src="/media/微信图片_20260903154321_3010_4.jpg"
-          onclick="document.getElementById('mainImage').src=this.src">
-      </div>
-    </div>
+  <div class="thumbnails" id="thumbnails"></div>
+</div>
 
     <div class="info">
       <h1>Holset HX35 Turbocharger</h1>
@@ -141,6 +139,51 @@ td:first-child {
   </div>
 
 </div>
+  
+<script>
+fetch('/products/turbo.json')
+  .then(response => {
+    if (!response.ok) throw new Error('Product data not found');
+    return response.json();
+  })
+  .then(product => {
+    const mainImage = document.getElementById('mainImage');
+    const thumbnails = document.getElementById('thumbnails');
+
+    if (!mainImage || !thumbnails) return;
+
+    const images = [
+      product.image,
+      ...(Array.isArray(product.images) ? product.images : [])
+    ].filter(Boolean);
+
+    if (images.length === 0) return;
+
+    mainImage.src = images[0];
+
+    thumbnails.innerHTML = '';
+
+    images.forEach((src, index) => {
+      const img = document.createElement('img');
+      img.src = src;
+      img.alt = product.name || 'Holset HX35 Turbocharger';
+      img.className = 'thumbnail';
+      img.style.width = '80px';
+      img.style.height = '80px';
+      img.style.objectFit = 'cover';
+      img.style.cursor = 'pointer';
+      img.style.margin = '5px';
+
+      img.onclick = () => {
+        mainImage.src = src;
+      };
+
+      thumbnails.appendChild(img);
+    });
+  })
+  .catch(error => console.error('Product image loading error:', error));
+</script>
+
 </body>
 </html>
 
