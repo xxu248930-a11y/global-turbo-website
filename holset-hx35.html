@@ -4,7 +4,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Holset HX35 Turbocharger | Product Details</title>
+<title>Product Details</title>
 <style>
 * { box-sizing: border-box; }
 body {
@@ -18,7 +18,10 @@ header {
   color: white;
   padding: 20px 6%;
 }
-header a { color: white; text-decoration: none; }
+header a {
+  color: white;
+  text-decoration: none;
+}
 .container {
   max-width: 1180px;
   margin: 35px auto;
@@ -40,6 +43,7 @@ header a { color: white; text-decoration: none; }
 }
 .thumbnails {
   display: flex;
+  flex-wrap: wrap;
   gap: 10px;
   margin-top: 12px;
 }
@@ -67,155 +71,394 @@ h1 { margin-top: 0; }
   margin-top: 25px;
   border-radius: 8px;
 }
+.details section { margin-bottom: 28px; }
+.details section:last-child { margin-bottom: 0; }
 table {
   width: 100%;
   border-collapse: collapse;
 }
-td {
+th, td {
   border: 1px solid #ddd;
   padding: 12px;
+  text-align: left;
 }
+th { background: #f3f3f3; }
 td:first-child {
-  background: #f3f3f3;
+  background: #f8f8f8;
   font-weight: bold;
   width: 35%;
 }
+.data-list {
+  margin: 0;
+  padding-left: 22px;
+  line-height: 1.9;
+}
+.description {
+  white-space: pre-wrap;
+  line-height: 1.8;
+}
+[hidden] { display: none !important; }
+
 @media(max-width: 700px) {
   .product { grid-template-columns: 1fr; }
   .main-image { height: 280px; }
+  .details, .product { padding: 18px; }
 }
 </style>
 </head>
+
 <body>
 
 <header>
   <a href=" ">HOME</a > |
-  <a href="holset.html">HOLSET PRODUCTS</a >
+  <a href="/holset.html">HOLSET PRODUCTS</a >
 </header>
 
 <div class="container">
 
   <div class="product">
-    <div>
-  <img
-    id="mainImage"
-    class="main-image"
-    src="/media/微信图片_20260903154321_3010_4-5.jpg"
-    alt="Holset HX35 Turbocharger">
 
-  <div class="thumbnails" id="thumbnails"></div>
-</div>
+    <div>
+      < img id="mainImage" class="main-image"
+           alt="Product image" hidden>
+      <div class="thumbnails" id="thumbnails"></div>
+    </div>
 
     <div class="info">
-      <h1 id="productName">Holset HX35 Turbocharger</h1>
-     <p><strong>Brand:</strong> <span id="productBrand">Holset</span></p >
-     <p><strong>Model:</strong> <span id="productModel">HX35</span></p >
-     <p><strong>OEM Part Number:</strong> <span id="productOEM">2835039</span></p >
+      <h1 id="productName" hidden></h1>
 
-      <h3>Product Overview</h3>
-      <p>Original Holset HX35 turbocharger. Contact us for product details, compatibility and availability.</p >
+      <p id="brandRow" hidden>
+        <strong>Brand:</strong>
+        <span id="productBrand"></span>
+      </p >
 
-      <a class="quote"
-        href="https://wa.me/8617377554610"
-        target="_blank">Request a Quote via WhatsApp</a >
+      <p id="modelRow" hidden>
+        <strong>Model:</strong>
+        <span id="productModel"></span>
+      </p >
+
+      <p id="oemRow" hidden>
+        <strong>Main OEM Part Number:</strong>
+        <span id="productOEM"></span>
+      </p >
+
+      <section id="overviewSection" hidden>
+        <h3>Product Overview</h3>
+        <div id="productDescription" class="description"></div>
+      </section>
+
+      <a class="quote" id="quoteLink"
+         href="https://wa.me/8617377554610"
+         target="_blank" rel="noopener">
+        Request a Quote via WhatsApp
+      </a >
     </div>
+
   </div>
 
   <div class="details">
-    <h2>Product Part Numbers</h2>
-    <table>
-      <tr><td>OEM Part Number</td><td>2835039</td></tr>
-    </table>
 
-    <h2>Technical Specifications</h2>
-    <table>
-  <thead>
-    <tr>
-      <th>Parameter</th>
-      <th>Specification</th>
-    </tr>
-  </thead>
-  <tbody id="technicalSpecs">
-  </tbody>
-</table>
+    <section id="partNumbersSection" hidden>
+      <h2>Part Numbers</h2>
+      <table>
+        <tbody id="partNumbersRows"></tbody>
+      </table>
+    </section>
 
-    <h2>Applications</h2>
-    <p>Contact us with your engine model and part number to confirm compatibility.</p >
+    <section id="technicalSection" hidden>
+      <h2>Technical Specifications</h2>
+
+      <table>
+        <thead>
+          <tr>
+            <th>Parameter</th>
+            <th>Specification</th>
+          </tr>
+        </thead>
+        <tbody id="technicalSpecs"></tbody>
+      </table>
+
+      <div id="engineModelsSection" hidden>
+        <h3>Engine Models</h3>
+        <ul class="data-list" id="engineModelsList"></ul>
+      </div>
+    </section>
+
+    <section id="applicationsSection" hidden>
+      <h2>Applications</h2>
+      <ul class="data-list" id="applicationsList"></ul>
+    </section>
+
+    <section id="productDetailsSection" hidden>
+      <h2>Product Details</h2>
+      <table>
+        <tbody id="productDetailsRows"></tbody>
+      </table>
+    </section>
+
   </div>
-
 </div>
-  
+
 <script>
 fetch('/products/turbo.json')
   .then(response => {
-    if (!response.ok) throw new Error('Product data not found');
+    if (!response.ok) {
+      throw new Error('Product data not found');
+    }
     return response.json();
   })
+
   .then(product => {
-    const mainImage = document.getElementById('mainImage');
-    const thumbnails = document.getElementById('thumbnails');
-    // Automatically display product information
-document.getElementById('productName').textContent = product.name || '';
-document.getElementById('productBrand').textContent = product.brand || '';
-document.getElementById('productModel').textContent = product.model || '';
-document.getElementById('productOEM').textContent = product.oem || '';
 
-// Automatically display technical specifications
-const technicalSpecs = document.getElementById('technicalSpecs');
+    const showText = (rowId, valueId, value) => {
+      const row = document.getElementById(rowId);
+      const target = document.getElementById(valueId);
 
-if (technicalSpecs && Array.isArray(product.technical_specs)) {
-  technicalSpecs.innerHTML = '';
+      if (
+        value !== undefined &&
+        value !== null &&
+        String(value).trim() !== ''
+      ) {
+        target.textContent = String(value);
+        row.hidden = false;
+      }
+    };
 
-  product.technical_specs.forEach(spec => {
-    const row = document.createElement('tr');
+    const addListRows = (tbody, label, values) => {
+      if (!Array.isArray(values)) return false;
 
-    const parameterCell = document.createElement('td');
-    parameterCell.textContent = spec.parameter || '';
+      const cleanValues = values
+        .map(v => String(v ?? '').trim())
+        .filter(Boolean);
 
-    const valueCell = document.createElement('td');
-    valueCell.textContent = spec.value || '';
+      if (!cleanValues.length) return false;
 
-    row.appendChild(parameterCell);
-    row.appendChild(valueCell);
-    technicalSpecs.appendChild(row);
-  });
-}
+      const row = document.createElement('tr');
+      const labelCell = document.createElement('td');
+      const valueCell = document.createElement('td');
 
+      labelCell.textContent = label;
+      valueCell.textContent = cleanValues.join(', ');
 
-    if (!mainImage || !thumbnails) return;
+      row.append(labelCell, valueCell);
+      tbody.appendChild(row);
 
+      return true;
+    };
+
+    const addDetailRow = (tbody, label, value) => {
+      if (
+        value === undefined ||
+        value === null ||
+        String(value).trim() === ''
+      ) return false;
+
+      const row = document.createElement('tr');
+      const labelCell = document.createElement('td');
+      const valueCell = document.createElement('td');
+
+      labelCell.textContent = label;
+      valueCell.textContent = String(value);
+
+      row.append(labelCell, valueCell);
+      tbody.appendChild(row);
+
+      return true;
+    };
+
+    const addListItems = (listId, values) => {
+      const list = document.getElementById(listId);
+
+      if (!Array.isArray(values)) return false;
+
+      const cleanValues = values
+        .map(v => String(v ?? '').trim())
+        .filter(Boolean);
+
+      if (!cleanValues.length) return false;
+
+      cleanValues.forEach(value => {
+        const item = document.createElement('li');
+        item.textContent = value;
+        list.appendChild(item);
+      });
+
+      return true;
+    };
+
+    // Product Information
+    const name = product.name || '';
+
+    if (name.trim()) {
+      document.getElementById('productName').textContent = name;
+      document.getElementById('productName').hidden = false;
+      document.title = name + ' | Product Details';
+    }
+
+    showText('brandRow', 'productBrand', product.brand);
+    showText('modelRow', 'productModel', product.model);
+    showText('oemRow', 'productOEM', product.oem);
+
+    // Product Description
+    if (
+      product.description &&
+      String(product.description).trim()
+    ) {
+      document.getElementById('productDescription').textContent =
+        String(product.description).trim();
+
+      document.getElementById('overviewSection').hidden = false;
+    }
+
+    // WhatsApp
+    const whatsapp = String(
+      product.whatsapp || '8617377554610'
+    ).replace(/[^\d]/g, '');
+
+    document.getElementById('quoteLink').href =
+      'https://wa.me/' + whatsapp;
+
+    // Product Images
     const images = [
       product.image,
       ...(Array.isArray(product.images) ? product.images : [])
-    ].filter(Boolean);
+    ].filter(src => typeof src === 'string' && src.trim());
 
-    if (images.length === 0) return;
+    const mainImage = document.getElementById('mainImage');
+    const thumbnails = document.getElementById('thumbnails');
 
-    mainImage.src = images[0];
+    if (images.length) {
+      mainImage.src = images[0];
+      mainImage.alt = name || 'Product image';
+      mainImage.hidden = false;
 
-    thumbnails.innerHTML = '';
+      images.forEach(src => {
+        const img = document.createElement('img');
 
-    images.forEach((src, index) => {
-      const img = document.createElement('img');
-      img.src = src;
-      img.alt = product.name || 'Holset HX35 Turbocharger';
-      img.className = 'thumbnail';
-      img.style.width = '80px';
-      img.style.height = '80px';
-      img.style.objectFit = 'cover';
-      img.style.cursor = 'pointer';
-      img.style.margin = '5px';
+        img.src = src;
+        img.alt = name || 'Product image';
 
-      img.onclick = () => {
-        mainImage.src = src;
-      };
+        img.addEventListener('click', () => {
+          mainImage.src = src;
+        });
 
-      thumbnails.appendChild(img);
-    });
+        thumbnails.appendChild(img);
+      });
+    }
+
+    // Part Numbers
+    const partRows = document.getElementById('partNumbersRows');
+
+    let hasPartNumbers = false;
+
+    hasPartNumbers =
+      addListRows(
+        partRows,
+        'Other OEM Part Numbers',
+        product.oem_numbers
+      ) || hasPartNumbers;
+
+    hasPartNumbers =
+      addListRows(
+        partRows,
+        'Reference Numbers',
+        product.reference_numbers
+      ) || hasPartNumbers;
+
+    hasPartNumbers =
+      addListRows(
+        partRows,
+        'Interchange Numbers',
+        product.interchange_numbers
+      ) || hasPartNumbers;
+
+    document.getElementById('partNumbersSection').hidden =
+      !hasPartNumbers;
+
+    // Technical Specifications
+    const specsBody = document.getElementById('technicalSpecs');
+
+    let hasTechnical = false;
+
+    if (Array.isArray(product.technical_specs)) {
+      product.technical_specs.forEach(spec => {
+        if (
+          !spec ||
+          (
+            !String(spec.parameter || '').trim() &&
+            !String(spec.value || '').trim()
+          )
+        ) return;
+
+        const row = document.createElement('tr');
+        const parameterCell = document.createElement('td');
+        const valueCell = document.createElement('td');
+
+        parameterCell.textContent = spec.parameter || '';
+        valueCell.textContent = spec.value || '';
+
+        row.append(parameterCell, valueCell);
+        specsBody.appendChild(row);
+
+        hasTechnical = true;
+      });
+    }
+
+    const hasEngineModels = addListItems(
+      'engineModelsList',
+      product.engine_models
+    );
+
+    document.getElementById('engineModelsSection').hidden =
+      !hasEngineModels;
+
+    document.getElementById('technicalSection').hidden =
+      !(hasTechnical || hasEngineModels);
+
+    // Applications
+    const hasApplications = addListItems(
+      'applicationsList',
+      product.applications
+    );
+
+    document.getElementById('applicationsSection').hidden =
+      !hasApplications;
+
+    // Product Details
+    const detailsRows = document.getElementById('productDetailsRows');
+
+    let hasDetails = false;
+
+    hasDetails =
+      addDetailRow(
+        detailsRows,
+        'Country of Origin',
+        product.origin
+      ) || hasDetails;
+
+    hasDetails =
+      addDetailRow(
+        detailsRows,
+        'Product Condition',
+        product.condition
+      ) || hasDetails;
+
+    hasDetails =
+      addDetailRow(
+        detailsRows,
+        'Warranty',
+        product.warranty
+      ) || hasDetails;
+
+    document.getElementById('productDetailsSection').hidden =
+      !hasDetails;
+
   })
-  .catch(error => console.error('Product image loading error:', error));
+
+  .catch(error => {
+    console.error('Product data loading error:', error);
+  });
 </script>
 
 </body>
 </html>
-
