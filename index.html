@@ -170,6 +170,7 @@ function askWhatsApp(productName) {
 }
 
 
+
 fetch("featured-products.json")
   .then(response => {
     if (!response.ok) {
@@ -191,31 +192,19 @@ fetch("featured-products.json")
       const card = document.createElement("div");
       card.className = "featured-card";
 
+      const link = document.createElement("a");
+      link.href = "turbochargers.html";
+      link.className = "featured-link";
+
       const img = document.createElement("img");
       img.src = product.image || "";
-      img.alt = product.name || "Featured Product";
+      img.alt = product.model || "Turbocharger";
 
       const title = document.createElement("h3");
-      title.textContent = product.name || "Product";
+      title.textContent = product.model || "Product";
 
-      const brand = document.createElement("p");
-      brand.textContent = "Brand: " + (product.brand || "Contact us");
-
-      const model = document.createElement("p");
-      model.textContent = "Model: " + (product.model || "Contact us");
-
-      const oem = document.createElement("p");
-      oem.textContent = "OEM: " + (product.oem || "Contact us");
-
-      const link = document.createElement("a");
-      link.href = product.url ||
-        "https://wa.me/8617377554610?text=" +
-        encodeURIComponent("I am interested in " + (product.name || "this product"));
-      link.target = "_blank";
-      link.rel = "noopener";
-      link.textContent = product.url ? "View Details →" : "Request a Quote →";
-
-      card.append(img, title, brand, model, oem, link);
+      link.append(img, title);
+      card.appendChild(link);
       list.appendChild(card);
     });
   })
