@@ -1,11 +1,36 @@
 
+
 media:
   input: media
   output: /media
 
 content:
+  # 品牌资料库
+  - name: brands
+    label: Brands（品牌管理）
+    type: collection
+    path: brands
+    filename: "{primary}.json"
+    format: json
+    view:
+      primary: name
+      fields:
+        - name
+    fields:
+      - name: name
+        label: Brand Name
+        type: string
+        required: true
+      - name: description
+        label: Brand Description
+        type: text
+      - name: logo
+        label: Brand Logo
+        type: image
+
+  # 产品资料库
   - name: products
-    label: Products
+    label: Products（产品管理）
     type: collection
     path: products
     filename: "{primary}.json"
@@ -47,43 +72,34 @@ content:
         label: All OEM Part Numbers
         type: string
         list: true
-
       - name: reference_numbers
         label: Reference Numbers
         type: string
         list: true
-
       - name: interchange_numbers
         label: Interchange Numbers
         type: string
         list: true
-
       - name: engine_models
         label: Engine Models
         type: string
         list: true
-
       - name: applications
         label: Applications
         type: string
         list: true
-
       - name: origin
         label: Country of Origin
         type: string
-
       - name: condition
         label: Product Condition
         type: string
-
       - name: warranty
         label: Warranty
         type: text
-
       - name: description
         label: Full Product Description
         type: rich-text
-
       - name: technical_specs
         label: Technical Specifications
         type: object
