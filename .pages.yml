@@ -54,7 +54,7 @@ content:
         type: string
         required: true
 
-                 - name: brand
+       - name: brand
         label: Brand
         type: reference
         required: true
