@@ -61,6 +61,32 @@
     "description": "Part Number: 848212-5002SInterchangeable Number: 848212-0002, 848212-5002, 736554-0015,736554-5015,736554-5015S, 759622-0005,759622-5005,759622-5005S,790032-0004,790032-5004,790032-5004S,800799-0002,800799-5002,800799-5002S,800799-0003,800799-5003,800799-\n\n5003S\n\nOEM Number: 12642314, 12642129\n\nTurbo Model: GT3788VA\n\nManufacturer: Garrett\n\nYear: 2011-\n\nEngine: Duramax LMLDisplacement: 6.6LPower: 397 HP\n\nEngine Manufacturer: DMAX\n\nSpeed:3000 RPM\n\nApplication:\n\n2011- GM, Chevrolet with Duramax LML Engine"
   },
   {
+    "name": "Holset HT3BTurbo Industrial CumminsVTA28 Genset NTA855Diesel 3529040",
+    "brand": "brands/holset.json",
+    "category": "categories/turbocharger.json",
+    "model": "GT3788VA",
+    "oem": "848212-0002, 848212-5002, 736554-0015,736554-5015,736554-5015S, 759622-0005, 759622-5005,759622-5005S,790032-0004, 790032-5004,790032-5004S, 800799-0002,800799-5002,800799-5002S,800799-0003,800799-5003,800799-",
+    "image": "/media/ScreenShot_2026-11-23_201544_483.png",
+    "images": [
+      "/media/ScreenShot_2026-11-23_201527_790.png",
+      "/media/ScreenShot_2026-11-23_201619_806.png",
+      "/media/ScreenShot_2026-11-23_201544_483-1.png",
+      "/media/ScreenShot_2026-11-23_201558_007.png"
+    ],
+    "whatsapp": "8617377554610",
+    "oem_numbers": [
+      "12642314, 12642129"
+    ],
+    "engine_models": [
+      " Duramax LML"
+    ],
+    "applications": [
+      "nterchangeable Number: 848212-0002, 848212-5002, 736554-0015,736554-5015,736554-5015S, 759622-0005, 759622-5005,759622-5005S,790032-0004, 790032-5004,790032-5004S, 800799-0002,800799-5002,800799-5002S,800799-0003,800799-5003,800799-5003SOEM Number: 12642314, 12642129"
+    ],
+    "origin": "中国",
+    "description": "Part Number: 848212-5002S\n\nInterchangeable Number: 848212-0002, 848212-5002, 736554-0015,736554-5015,736554-5015S, 759622-0005, 759622-5005,759622-5005S,790032-0004, 790032-5004,790032-5004S, 800799-0002,800799-5002,800799-5002S,800799-0003,800799-5003,800799-\n\n5003S\n\nOEM Number: 12642314, 12642129\n\nTurbo Model: GT3788VA\n\nManufacturer: Garrett\n\nYear: 2011-\n\nEngine: Duramax LML\n\nEngine Manufacturer: DMAXDisplacement: 6.6LPower: 397HP\n\nSpeed: 3000 RPM\n\nApplication:2011- GM, Chevrolet with Duramax LML Engine"
+  },
+  {
     "name": "HX35 ",
     "brand": "Holset",
     "model": "hx35",
