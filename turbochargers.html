@@ -79,27 +79,50 @@
     <p class="intro">Choose a brand to explore our turbocharger products.</p >
 
     
-<div class="brands">
-  <a class="brand" href="brand.html?name=Holset">
-    <h2>HOLSET</h2>
-    <p>Genuine Holset Turbochargers</p >
-  </a >
-
-  <a class="brand" href="garrett.html">
-    <h2>GARRETT</h2>
-    <p>Genuine Garrett Turbochargers</p >
-  </a >
-
-  <a class="brand" href="borgwarner.html">
-    <h2>BORGWARNER</h2>
-    <p>Turbochargers and Parts</p >
-  </a >
-
-  <a class="brand" href="mitsubishi.html">
-    <h2>MITSUBISHI</h2>
-    <p>Turbochargers and Parts</p >
-  </a >
+<
+<div class="brands" id="brand-list">
+  <p>Loading brands...</p >
 </div>
+
+<script>
+fetch("/brands-index.json")
+  .then(response => {
+    if (!response.ok) {
+      throw new Error("Brand index not found");
+    }
+    return response.json();
+  })
+  .then(brands => {
+    const list = document.getElementById("brand-list");
+    list.innerHTML = "";
+
+    if (!Array.isArray(brands) || brands.length === 0) {
+      list.innerHTML = "<p>No brands available.</p >";
+      return;
+    }
+
+    brands.forEach(brand => {
+      const card = document.createElement("a");
+      card.className = "brand";
+      card.href = "brand.html?name=" + encodeURIComponent(brand.name);
+
+      const title = document.createElement("h2");
+      title.textContent = brand.name;
+
+      const description = document.createElement("p");
+      description.textContent = brand.description || "Turbochargers and Parts";
+
+      card.appendChild(title);
+      card.appendChild(description);
+      list.appendChild(card);
+    });
+  })
+  .catch(error => {
+    console.error("Brand loading error:", error);
+    document.getElementById("brand-list").innerHTML =
+      "<p>Unable to load brands. Please try again later.</p >";
+  });
+</script>
 
   </main>
 
