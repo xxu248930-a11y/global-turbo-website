@@ -1,4 +1,4 @@
- 
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -126,32 +126,22 @@
     }
 
     .image-area {
-      height: 220px;
-      padding: 12px;
-      background: white;
+      width: 100%;
+      aspect-ratio: 1 / 1;
+      overflow: hidden;
+      background: #ffffff;
       display: flex;
       align-items: center;
       justify-content: center;
     }
 
-   
-.image-area {
-  width: 100%;
-  aspect-ratio: 1 / 1;
-  overflow: hidden;
-  background: #ffffff;
-  border-radius: 8px;
-}
-
-.image-area img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  object-position: center;
-  display: block;
-  image-rendering: auto;
-}
-
+    .image-area img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: center;
+      display: block;
+    }
 
     .no-image {
       color: #999;
@@ -186,21 +176,43 @@
       overflow-wrap: anywhere;
     }
 
-    .quote-button {
+    .product-buttons {
+      display: flex;
+      gap: 8px;
+      margin-top: 15px;
+    }
+
+    .product-buttons a {
+      flex: 1;
       display: block;
       text-align: center;
-      background: #bd252e;
-      color: white;
-      padding: 11px;
-      margin-top: 15px;
+      padding: 11px 5px;
       border-radius: 5px;
       text-decoration: none;
-      font-size: 14px;
+      font-size: 13px;
       font-weight: bold;
+    }
+
+    .details-button {
+      background: #ffffff;
+      color: #bd252e;
+      border: 1px solid #bd252e;
+    }
+
+    .details-button:hover {
+      background: #bd252e;
+      color: white;
+    }
+
+    .quote-button {
+      background: #bd252e;
+      color: white;
+      border: 1px solid #bd252e;
     }
 
     .quote-button:hover {
       background: #991c24;
+      border-color: #991c24;
     }
 
     .empty {
@@ -236,11 +248,6 @@
         gap: 12px;
       }
 
-      .image-area {
-        height: 145px;
-        padding: 8px;
-      }
-
       .product-info {
         padding: 11px;
       }
@@ -253,7 +260,12 @@
         font-size: 12px;
       }
 
-      .quote-button {
+      .product-buttons {
+        flex-direction: column;
+        gap: 7px;
+      }
+
+      .product-buttons a {
         font-size: 12px;
         padding: 10px 5px;
       }
@@ -398,6 +410,20 @@
     const oem = document.createElement("p");
     oem.textContent = "OEM: " + (product.oem || "Contact us");
 
+    // View Details button
+    const details = document.createElement("a");
+    details.className = "details-button";
+
+    const productName =
+      product.name || product.model || "";
+
+    details.href =
+      "product-details.html?name=" +
+      encodeURIComponent(productName);
+
+    details.textContent = "View Details";
+
+    // Request a Quote button
     const quote = document.createElement("a");
     quote.className = "quote-button";
 
@@ -411,7 +437,19 @@
     quote.rel = "noopener";
     quote.textContent = "Request a Quote";
 
-    info.append(category, title, brand, model, oem, quote);
+    const buttons = document.createElement("div");
+    buttons.className = "product-buttons";
+    buttons.append(details, quote);
+
+    info.append(
+      category,
+      title,
+      brand,
+      model,
+      oem,
+      buttons
+    );
+
     card.append(imageArea, info);
 
     return card;
@@ -513,4 +551,3 @@
 
 </body>
 </html>
-
