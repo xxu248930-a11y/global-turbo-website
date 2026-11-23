@@ -1,5 +1,5 @@
 
-name: Build Product Index
+name: Build Product and Brand Index
 
 on:
   push:
@@ -7,6 +7,7 @@ on:
       - main
     paths:
       - 'products/**'
+      - 'brands/**'
       - '.github/workflows/build-product-index.yml'
   workflow_dispatch:
 
@@ -23,59 +24,98 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Generate product index
+      - name: Generate product and brand indexes
         run: |
           node <<'NODE'
           const fs = require("fs");
           const path = require("path");
 
+          // 1. Generate product index
           const products = [];
 
-          function scan(dir) {
+          function scanProducts(dir) {
             if (!fs.existsSync(dir)) return;
 
             for (const item of fs.readdirSync(dir, { withFileTypes: true })) {
               const file = path.join(dir, item.name);
 
               if (item.isDirectory()) {
-                scan(file);
+                scanProducts(file);
               } else if (item.isFile() && item.name.endsWith(".json")) {
                 try {
                   const data = JSON.parse(fs.readFileSync(file, "utf8"));
 
                   if (data && typeof data === "object" && !Array.isArray(data)) {
                     products.push(data);
-                    console.log("Added:", file);
+                    console.log("Added product:", file);
                   }
                 } catch (error) {
-                  console.log("Skipped invalid JSON:", file);
+                  console.log("Skipped invalid product JSON:", file);
                 }
               }
             }
           }
 
-          scan("products");
+          scanProducts("products");
 
           fs.writeFileSync(
             "products-index.json",
             JSON.stringify(products, null, 2) + "\n"
           );
 
+          // 2. Generate brand index
+          const brands = [];
+
+          function scanBrands(dir) {
+            if (!fs.existsSync(dir)) return;
+
+            for (const item of fs.readdirSync(dir, { withFileTypes: true })) {
+              const file = path.join(dir, item.name);
+
+              if (item.isDirectory()) {
+                scanBrands(file);
+              } else if (item.isFile() && item.name.endsWith(".json")) {
+                try {
+                  const data = JSON.parse(fs.readFileSync(file, "utf8"));
+
+                  if (
+                    data &&
+                    typeof data === "object" &&
+                    !Array.isArray(data) &&
+                    typeof data.name === "string" &&
+                    data.name.trim()
+                  ) {
+                    brands.push(data);
+                    console.log("Added brand:", data.name);
+                  }
+                } catch (error) {
+                  console.log("Skipped invalid brand JSON:", file);
+                }
+              }
+            }
+          }
+
+          scanBrands("brands");
+
+          fs.writeFileSync(
+            "brands-index.json",
+            JSON.stringify(brands, null, 2) + "\n"
+          );
+
           console.log("TOTAL PRODUCTS:", products.length);
+          console.log("TOTAL BRANDS:", brands.length);
           NODE
 
-      - name: Save generated index
+      - name: Save generated indexes
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
 
-          git add -f products-index.json
+          git add -f products-index.json brands-index.json
 
           if git diff --cached --quiet; then
-            echo "Product index is already up to date."
+            echo "Indexes are already up to date."
           else
-            git commit -m "Automatically update product index"
+            git commit -m "Automatically update product and brand indexes"
             git push
           fi
-
-
