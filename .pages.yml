@@ -54,16 +54,17 @@ content:
         type: string
         required: true
 
-       - name: brand
+      
+      - name: brand
         label: Brand
         type: reference
         required: true
         options:
           collection: brands
-          search: "fields.name"
-          value: "{path}"
-          label: "{fields.name}"
-          
+          search: "name"
+          value: "{primary}"
+          label: "{primary}"
+
       - name: category
         label: Product Category
         type: reference
@@ -73,6 +74,7 @@ content:
           search: "name"
           value: "{primary}"
           label: "{primary}"
+
 
       - name: model
         label: Model
