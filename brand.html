@@ -1,1 +1,246 @@
 
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Brand Products | Global Turbo</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: #fff;
+      color: #222;
+    }
+
+    .container {
+      max-width: 1400px;
+      margin: auto;
+      padding: 30px 20px;
+    }
+
+    .page-title {
+      text-align: center;
+      margin-bottom: 28px;
+    }
+
+    .page-title h1 {
+      margin: 0 0 8px;
+      font-size: 30px;
+    }
+
+    .page-title p {
+      margin: 0;
+      color: #777;
+      font-size: 14px;
+    }
+
+    .product-grid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 22px;
+    }
+
+    .product-card {
+      min-width: 0;
+      border: 1px solid #eee;
+      border-radius: 8px;
+      overflow: hidden;
+      background: #fff;
+    }
+
+    .product-image {
+      width: 100%;
+      aspect-ratio: 1 / 1;
+      padding: 5px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: #fff;
+    }
+
+    .product-image img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      display: block;
+    }
+
+    .product-actions {
+      display: flex;
+      gap: 8px;
+      padding: 10px;
+    }
+
+    .product-actions a {
+      flex: 1;
+      text-align: center;
+      text-decoration: none;
+      padding: 10px 5px;
+      border-radius: 5px;
+      font-size: 13px;
+      font-weight: bold;
+    }
+
+    .details {
+      background: #222;
+      color: #fff;
+    }
+
+    .quote {
+      background: #087b45;
+      color: #fff;
+    }
+
+    .empty {
+      grid-column: 1 / -1;
+      text-align: center;
+      padding: 50px 15px;
+      color: #777;
+    }
+
+    @media (max-width: 700px) {
+      .container {
+        padding: 20px 12px;
+      }
+
+      .product-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 12px;
+      }
+
+      .page-title h1 {
+        font-size: 23px;
+      }
+
+      .product-actions {
+        gap: 5px;
+        padding: 7px;
+      }
+
+      .product-actions a {
+        font-size: 12px;
+        padding: 9px 3px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <main class="container">
+    <div class="page-title">
+      <h1 id="brand-title">Turbocharger Products</h1>
+      <p>Genuine Turbochargers and Parts</p >
+    </div>
+
+    <div class="product-grid" id="product-grid">
+      <div class="empty">Loading products...</div>
+    </div>
+  </main>
+
+  <script>
+    const params = new URLSearchParams(window.location.search);
+    const brandName = params.get("name") || "";
+
+    const grid = document.getElementById("product-grid");
+    const title = document.getElementById("brand-title");
+
+    title.textContent = brandName
+      ? brandName + " Turbochargers"
+      : "Turbocharger Products";
+
+    function makeSlug(value) {
+      return String(value || "")
+        .trim()
+        .toLowerCase()
+        .replace(/[^a-z0-9]+/g, "-")
+        .replace(/^-|-$/g, "");
+    }
+
+    fetch("/products-index.json")
+      .then(response => {
+        if (!response.ok) {
+          throw new Error("Product index not found");
+        }
+        return response.json();
+      })
+      .then(products => {
+        if (!Array.isArray(products)) {
+          throw new Error("Invalid product index");
+        }
+
+        const filtered = products.filter(product =>
+          String(product.brand || "").toLowerCase() ===
+          brandName.toLowerCase()
+        );
+
+        grid.innerHTML = "";
+
+        if (filtered.length === 0) {
+          grid.innerHTML =
+            '<div class="empty">No products found for this brand.</div>';
+          return;
+        }
+
+        filtered.forEach(product => {
+          const image = product.image ||
+            (Array.isArray(product.images) ? product.images[0] : "");
+
+          if (!image) return;
+
+          const model = product.model || product.name || "";
+          const detailSlug =
+            product.slug ||
+            (makeSlug(product.brand) + "-" + makeSlug(model));
+
+          const card = document.createElement("div");
+          card.className = "product-card";
+
+          const imageBox = document.createElement("div");
+          imageBox.className = "product-image";
+
+          const img = document.createElement("img");
+          img.src = image;
+          img.alt = model;
+          img.loading = "lazy";
+
+          imageBox.appendChild(img);
+
+          const actions = document.createElement("div");
+          actions.className = "product-actions";
+
+          const details = document.createElement("a");
+          details.className = "details";
+          details.href = "/" + detailSlug;
+          details.textContent = "Details";
+
+          const quote = document.createElement("a");
+          quote.className = "quote";
+          quote.href = "https://wa.me/8617377554610";
+          quote.target = "_blank";
+          quote.rel = "noopener";
+          quote.textContent = "Request a Quote";
+
+          actions.appendChild(details);
+          actions.appendChild(quote);
+
+          card.appendChild(imageBox);
+          card.appendChild(actions);
+
+          grid.appendChild(card);
+        });
+      })
+      .catch(error => {
+        console.error(error);
+        grid.innerHTML =
+          '<div class="empty">Products could not be loaded.</div>';
+      });
+  </script>
+</body>
+</html>
+
