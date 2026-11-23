@@ -54,16 +54,13 @@ content:
         type: string
         required: true
 
-      - name: brand
+            - name: brand
         label: Brand
         type: reference
         required: true
         options:
           collection: brands
-          search: "name"
-          value: "{primary}"
-          label: "{primary}"
-
+          
       - name: category
         label: Product Category
         type: reference
