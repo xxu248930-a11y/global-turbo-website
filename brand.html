@@ -174,10 +174,19 @@
           throw new Error("Invalid product index");
         }
 
-        const filtered = products.filter(product =>
-          String(product.brand || "").toLowerCase() ===
-          brandName.toLowerCase()
-        );
+        function normalizeBrand(value) {
+  return String(value || "")
+    .trim()
+    .replace(/\\/g, "/")
+    .split("/")
+    .pop()
+    .replace(/\.json$/i, "")
+    .toLowerCase();
+}
+
+const filtered = products.filter(product =>
+  normalizeBrand(product.brand) === normalizeBrand(brandName)
+);
 
         grid.innerHTML = "";
 
