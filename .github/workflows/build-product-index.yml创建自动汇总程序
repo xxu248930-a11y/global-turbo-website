@@ -6,8 +6,7 @@ on:
     branches:
       - main
     paths:
-      - 'products/*.json'
-      - 'products/**/*.json'
+      - 'products/**'
       - '.github/workflows/build-product-index.yml'
   workflow_dispatch:
 
@@ -19,7 +18,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Get repository files
+      - name: Checkout repository
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
@@ -30,51 +29,47 @@ jobs:
           const fs = require("fs");
           const path = require("path");
 
-          const folder = "products";
           const products = [];
 
-          function readProducts(dir) {
+          function scan(dir) {
             if (!fs.existsSync(dir)) return;
 
             for (const item of fs.readdirSync(dir, { withFileTypes: true })) {
-              const fullPath = path.join(dir, item.name);
+              const file = path.join(dir, item.name);
 
               if (item.isDirectory()) {
-                readProducts(fullPath);
-                continue;
-              }
+                scan(file);
+              } else if (item.isFile() && item.name.endsWith(".json")) {
+                try {
+                  const data = JSON.parse(fs.readFileSync(file, "utf8"));
 
-              if (!item.isFile() || !item.name.endsWith(".json")) {
-                continue;
-              }
-
-              try {
-                const data = JSON.parse(fs.readFileSync(fullPath, "utf8"));
-
-                if (data && typeof data === "object" && !Array.isArray(data)) {
-                  products.push(data);
+                  if (data && typeof data === "object" && !Array.isArray(data)) {
+                    products.push(data);
+                    console.log("Added:", file);
+                  }
+                } catch (error) {
+                  console.log("Skipped invalid JSON:", file);
                 }
-              } catch (error) {
-                console.log("Skipped invalid JSON:", fullPath);
               }
             }
           }
 
-          readProducts(folder);
+          scan("products");
 
           fs.writeFileSync(
             "products-index.json",
             JSON.stringify(products, null, 2) + "\n"
           );
 
-          console.log("Total products indexed:", products.length);
+          console.log("TOTAL PRODUCTS:", products.length);
           NODE
 
       - name: Save generated index
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add products-index.json
+
+          git add -f products-index.json
 
           if git diff --cached --quiet; then
             echo "Product index is already up to date."
@@ -82,4 +77,5 @@ jobs:
             git commit -m "Automatically update product index"
             git push
           fi
+
 
