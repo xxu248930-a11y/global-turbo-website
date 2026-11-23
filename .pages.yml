@@ -53,16 +53,13 @@ content:
         label: Product Name
         type: string
         required: true
-      
+     
       - name: brand
         label: Brand
         type: reference
         required: true
         options:
           collection: brands
-          search: "name"
-          value: "{primary}"
-          label: "{primary}"
 
       - name: category
         label: Product Category
@@ -70,9 +67,6 @@ content:
         required: true
         options:
           collection: categories
-          search: "name"
-          value: "{primary}"
-          label: "{primary}"
 
       - name: model
         label: Model
