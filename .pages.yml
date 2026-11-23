@@ -60,6 +60,9 @@ content:
         required: true
         options:
           collection: brands
+          search: "name"
+          value: "{primary}"
+          label: "{primary}"
 
       - name: category
         label: Product Category
@@ -67,6 +70,9 @@ content:
         required: true
         options:
           collection: categories
+          search: "name"
+          value: "{primary}"
+          label: "{primary}"
 
       - name: model
         label: Model
