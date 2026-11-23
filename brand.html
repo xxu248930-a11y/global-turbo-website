@@ -721,7 +721,7 @@
 
           const details = document.createElement("a");
           details.className = "details";
-          details.href = "/" + detailSlug;
+         details.href = "product-details.html?name=" + encodeURIComponent(product.name || product.model || "");
           details.textContent = "Details";
 
           const quote = document.createElement("a");
