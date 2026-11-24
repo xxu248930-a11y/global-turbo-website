@@ -1,1 +1,163 @@
 
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cummins ISF Engines | Genuine Engine Supplier</title>
+<meta name="description" content="Explore genuine Cummins ISF diesel engines. View engine models, power specifications and request a quotation.">
+
+<style>
+*{box-sizing:border-box}
+body{margin:0;font-family:Arial,sans-serif;color:#242a30;background:#f3f5f7}
+header{background:#171c22;color:white;padding:22px 6%;display:flex;justify-content:space-between;align-items:center;gap:15px;flex-wrap:wrap}
+.logo{font-size:21px;font-weight:bold;letter-spacing:1px}
+.logo span{color:#e31e24}
+header a{color:white;text-decoration:none;font-size:14px}
+.hero{background:linear-gradient(120deg,#171c22,#343d47);color:white;padding:65px 6%;position:relative}
+.hero small{color:#ff555a;font-weight:bold;letter-spacing:2px}
+.hero h1{font-size:42px;margin:14px 0}
+.hero p{max-width:650px;color:#d2d7dc;line-height:1.8}
+.hero a{display:inline-block;margin-top:15px;background:#d71920;color:white;padding:13px 25px;text-decoration:none;border-radius:4px;font-weight:bold}
+.container{max-width:1250px;margin:auto;padding:45px 20px 65px}
+.section-title{margin-bottom:25px}
+.section-title h2{font-size:27px;margin:0 0 8px}
+.section-title p{color:#737d87;margin:0;line-height:1.6}
+.product-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:24px}
+.product-card{background:white;border:1px solid #e5e8eb;border-radius:8px;overflow:hidden;transition:.2s}
+.product-card:hover{transform:translateY(-4px);box-shadow:0 10px 25px #00000012}
+.product-image{height:245px;background:#eef0f2;display:flex;align-items:center;justify-content:center;overflow:hidden}
+.product-image img{width:100%;height:100%;object-fit:cover}
+.product-info{padding:20px}
+.product-info h3{font-size:19px;margin:0 0 12px;color:#222}
+.spec{font-size:13px;color:#65717c;line-height:1.8}
+.spec strong{color:#333}
+.description{font-size:14px;color:#747d85;line-height:1.6;margin:12px 0}
+.actions{display:flex;gap:10px;margin-top:18px}
+.actions a{flex:1;text-align:center;padding:11px 8px;text-decoration:none;border-radius:4px;font-size:13px;font-weight:bold}
+.details{background:#252d35;color:white}
+.quote{background:#d71920;color:white}
+.empty{grid-column:1/-1;background:white;padding:45px 20px;text-align:center;border-radius:8px;color:#69737d;line-height:1.8}
+.loading{grid-column:1/-1;text-align:center;padding:45px;color:#69737d}
+.contact{background:#202830;color:white;text-align:center;padding:42px 20px}
+.contact h2{margin-top:0}
+.contact p{color:#cbd1d6;line-height:1.7}
+.contact a{display:inline-block;background:#d71920;color:white;text-decoration:none;padding:13px 25px;border-radius:4px;margin-top:10px}
+footer{text-align:center;padding:22px;color:#929ba3;font-size:13px}
+@media(max-width:600px){.hero{padding:45px 22px}.hero h1{font-size:32px}.container{padding:35px 15px}.product-image{height:220px}}
+</style>
+</head>
+
+<body>
+
+<header>
+  <div class="logo">GLOBAL <span>CUMMINS</span> ENGINES</div>
+  <a href=" ">← All Cummins Series</a >
+</header>
+
+<section class="hero">
+  <small>GENUINE DIESEL ENGINE SUPPLIER</small>
+  <h1>Cummins ISF Series</h1>
+  <p>
+    Explore our Cummins ISF diesel engine range.
+    Find engine models, power specifications and product information.
+    Contact us for availability and quotations.
+  </p >
+  <a href="#products">Explore ISF Engines</a >
+</section>
+
+<main class="container" id="products">
+  <div class="section-title">
+    <h2>ISF Engine Products</h2>
+    <p>Browse available Cummins ISF engine models.</p >
+  </div>
+
+  <section class="product-grid" id="productGrid">
+    <div class="loading">Loading Cummins ISF engines...</div>
+  </section>
+</main>
+
+<section class="contact">
+  <h2>Looking for a Cummins ISF Engine?</h2>
+  <p>Contact us for genuine engine information, stock availability and export quotations.</p >
+  <a href="https://wa.me/8617377554610" target="_blank">Contact Us on WhatsApp</a >
+</section>
+
+<footer>© Global Cummins Engine Supplier. All Rights Reserved.</footer>
+
+<script>
+const grid = document.getElementById("productGrid");
+
+function getText(value){
+  if(value === undefined || value === null) return "";
+  if(typeof value === "object") return value.name || value.value || "";
+  return String(value);
+}
+
+function renderProducts(products){
+  if(!products.length){
+    grid.innerHTML = `
+      <div class="empty">
+        <h3>No ISF engines available yet</h3>
+        <p>Please check back later or contact us for product inquiries.</p >
+      </div>`;
+    return;
+  }
+
+  grid.innerHTML = products.map(product => {
+    const name = getText(product.name);
+    const model = getText(product.model);
+    const power = getText(product.power);
+    const description = getText(product.description);
+    const image = getText(product.image);
+    const whatsapp = getText(product.whatsapp) || "8617377554610";
+
+    const detailsUrl = "../../product-details.html?type=cummins&name=" + encodeURIComponent(name);
+    const quoteUrl = "https://wa.me/" + whatsapp.replace(/\D/g,"") + "?text=" + encodeURIComponent("Hello, I am interested in Cummins ISF engine: " + name);
+
+    return `
+      <article class="product-card">
+        <div class="product-image">
+          ${image ? `< img src="${image}" alt="${name}" loading="lazy">` : `<span>No product image</span>`}
+        </div>
+        <div class="product-info">
+          <h3>${name}</h3>
+          <div class="spec">
+            ${model ? `<div><strong>Engine Model:</strong> ${model}</div>` : ""}
+            ${power ? `<div><strong>Power:</strong> ${power}</div>` : ""}
+          </div>
+          ${description ? `<p class="description">${description.replace(/<[^>]*>/g," ").slice(0,160)}</p >` : ""}
+          <div class="actions">
+            <a class="details" href="${detailsUrl}">View Details</a >
+            <a class="quote" href="${quoteUrl}" target="_blank">Get Quote</a >
+          </div>
+        </div>
+      </article>`;
+  }).join("");
+}
+
+fetch("../../cummins-products-index.json")
+  .then(response => {
+    if(!response.ok) throw new Error("Cummins product index not found");
+    return response.json();
+  })
+  .then(data => {
+    const products = Array.isArray(data) ? data : [];
+    const isfProducts = products.filter(product =>
+      getText(product.series).trim().toUpperCase().startsWith("ISF")
+    );
+    renderProducts(isfProducts);
+  })
+  .catch(error => {
+    console.error(error);
+    grid.innerHTML = `
+      <div class="empty">
+        <h3>Unable to load engine products</h3>
+        <p>Please check the Cummins product index file.</p >
+      </div>`;
+  });
+</script>
+
+</body>
+</html>
+
