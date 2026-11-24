@@ -1,14 +1,17 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Engine Gaskets & Overhaul Kits | Global Engine Parts Supplier</title>
+<title>Piston & Cylinder Parts | Global Engine Parts Supplier</title>
+<meta name="description" content="Pistons, piston rings, cylinder liners, cylinder blocks and connecting rods for diesel engines.">
+
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
 body{font-family:Arial,sans-serif;background:#f5f6f8;color:#252a31}
 header{background:#202832;color:white;padding:22px 5%}
-header a{color:white;text-decoration:none}
+header a{color:white;text-decoration:none;font-size:14px}
 .container{max-width:1200px;margin:35px auto;padding:0 18px}
 h1{font-size:30px;margin-bottom:12px}
 .intro{color:#68717d;line-height:1.7;margin-bottom:25px}
@@ -25,17 +28,21 @@ input{width:100%;max-width:420px;padding:12px;border:1px solid #ddd;border-radiu
 .empty{background:white;padding:35px;text-align:center;color:#777;border-radius:8px}
 </style>
 </head>
+
 <body>
 <header>
 <a href=" ">← Back to Engine Parts</a >
 </header>
 
 <main class="container">
-<h1>Engine Gaskets & Overhaul Kits</h1>
-<p class="intro">Explore diesel engine gasket sets, cylinder head gaskets, overhaul kits, seal kits and complete engine rebuild components.</p >
+<h1>Piston & Cylinder Parts</h1>
+<p class="intro">
+Explore our diesel engine piston and cylinder components, including pistons,
+piston rings, cylinder liners, cylinder blocks and connecting rods.
+</p >
 
 <div class="toolbar">
-<input id="search" type="search" placeholder="Search by part name or OEM number...">
+<input id="search" type="search" placeholder="Search by product name or OEM number...">
 </div>
 
 <div id="products" class="grid">
@@ -46,16 +53,24 @@ input{width:100%;max-width:420px;padding:12px;border:1px solid #ddd;border-radiu
 <script>
 var allProducts=[];
 
+function getText(value){
+  if(value===undefined||value===null)return "";
+  if(Array.isArray(value))return value.map(getText).join(" ");
+  if(typeof value==="object")return value.name||value.value||"";
+  return String(value);
+}
+
 function matches(product){
-  var category=String(product.category||"").toLowerCase();
-  var name=String(product.name||"").toLowerCase();
+  var category=getText(product.category).toLowerCase();
+  var name=getText(product.name).toLowerCase();
   var text=category+" "+name;
 
   var keywords=[
-    "gasket","gaskets","overhaul kit","rebuild kit",
-    "seal kit","head gasket","engine kit",
-    "密封垫","垫片","大修包","修理包",
-    "缸垫","气缸垫","密封件"
+    "piston","pistons","piston ring","piston rings",
+    "cylinder liner","cylinder block","cylinder sleeve",
+    "connecting rod","engine block",
+    "活塞","活塞环","缸套","气缸套",
+    "缸体","气缸体","连杆"
   ];
 
   return keywords.some(function(word){
@@ -68,15 +83,15 @@ function renderProducts(list){
   container.innerHTML="";
 
   if(!list.length){
-    container.innerHTML='<div class="empty">No matching gaskets and overhaul kits found.</div>';
+    container.innerHTML='<div class="empty">No matching piston and cylinder parts found.</div>';
     return;
   }
 
   list.forEach(function(product){
-    var name=String(product.name||"Unnamed Product");
-    var image=String(product.image||"");
-    var oem=String(product.oem||"");
-    var description=String(product.description||"").replace(/<[^>]*>/g," ").slice(0,150);
+    var name=getText(product.name)||"Unnamed Product";
+    var image=getText(product.image);
+    var oem=getText(product.oem);
+    var description=getText(product.description).replace(/<[^>]*>/g," ").slice(0,150);
 
     var card=document.createElement("div");
     card.className="card";
@@ -88,7 +103,10 @@ function renderProducts(list){
       var img=document.createElement("img");
       img.src=image;
       img.alt=name;
+      img.loading="lazy";
       imageBox.appendChild(img);
+    }else{
+      imageBox.textContent="Product Image";
     }
 
     var info=document.createElement("div");
@@ -116,7 +134,7 @@ function renderProducts(list){
 
 fetch("../../engine-parts-index.json")
 .then(function(response){
-  if(!response.ok) throw new Error("Index file not found");
+  if(!response.ok)throw new Error("Index file not found");
   return response.json();
 })
 .then(function(products){
@@ -124,16 +142,22 @@ fetch("../../engine-parts-index.json")
   renderProducts(allProducts);
 })
 .catch(function(error){
+  console.error(error);
   document.getElementById("products").innerHTML=
     '<div class="empty">Unable to load products. Please check the product index file.</div>';
 });
 
 document.getElementById("search").addEventListener("input",function(){
   var keyword=this.value.toLowerCase();
+
   var filtered=allProducts.filter(function(product){
-    return String(product.name||"").toLowerCase().indexOf(keyword)!==-1 ||
-           String(product.oem||"").toLowerCase().indexOf(keyword)!==-1;
+    return [
+      getText(product.name),
+      getText(product.oem),
+      getText(product.brand)
+    ].join(" ").toLowerCase().indexOf(keyword)!==-1;
   });
+
   renderProducts(filtered);
 });
 </script>
