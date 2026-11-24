@@ -1,11 +1,10 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Engine Parts | Global Engine Parts Supplier</title>
-<meta name="description" content="Explore engine parts, OEM numbers, reference numbers and compatible engine models.">
+<meta name="description" content="Explore diesel engine parts, OEM numbers and compatible engine components.">
 
 <style>
 *{box-sizing:border-box}
@@ -18,18 +17,23 @@ header a{color:white;text-decoration:none;font-size:14px}
 .hero small{color:#e5b34f;font-weight:bold;letter-spacing:2px}
 .hero h1{font-size:38px;margin:13px 0}
 .hero p{max-width:680px;color:#d5dcdf;line-height:1.8}
-.search-area{max-width:1250px;margin:-1px auto 0;padding:24px 20px}
+.container{max-width:1250px;margin:auto;padding:35px 20px 60px}
+.heading{margin:10px 0 25px}
+.heading h2{font-size:25px;margin:0 0 7px}
+.heading p{margin:0;color:#788087;font-size:14px}
+.category-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:18px}
+.category-card{display:block;background:white;border:1px solid #e2e5e3;border-radius:6px;padding:24px;text-decoration:none;color:#252a2d;transition:.2s}
+.category-card:hover{box-shadow:0 8px 24px #00000012;transform:translateY(-3px)}
+.category-card .number{color:#d59b28;font-size:13px;font-weight:bold;letter-spacing:1px}
+.category-card h3{font-size:18px;margin:12px 0}
+.category-card p{font-size:13px;color:#788087;line-height:1.7;margin:0}
+.category-card .arrow{display:block;margin-top:18px;color:#26363d;font-size:13px;font-weight:bold}
+.search-area{margin-top:45px}
 .search-box{display:flex;gap:10px;background:white;padding:12px;border:1px solid #e2e5e3;border-radius:6px}
 .search-box input{flex:1;min-width:0;border:0;outline:0;font-size:15px;padding:8px}
 .search-box button{border:0;background:#26363d;color:white;padding:11px 22px;border-radius:4px;font-weight:bold}
-.container{max-width:1250px;margin:auto;padding:10px 20px 60px}
-.heading{display:flex;justify-content:space-between;align-items:end;gap:15px;flex-wrap:wrap;margin:10px 0 25px}
-.heading h2{font-size:25px;margin:0 0 7px}
-.heading p{margin:0;color:#788087;font-size:14px}
-#count{color:#8a681e;font-size:14px}
-.product-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:20px}
-.card{background:white;border:1px solid #e2e5e3;border-radius:6px;overflow:hidden;transition:.2s}
-.card:hover{box-shadow:0 8px 24px #00000012;transform:translateY(-3px)}
+.product-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:20px;margin-top:25px}
+.card{background:white;border:1px solid #e2e5e3;border-radius:6px;overflow:hidden}
 .photo{height:220px;background:#e9ecea;overflow:hidden;display:flex;align-items:center;justify-content:center}
 .photo img{width:100%;height:100%;object-fit:cover}
 .photo span{color:#858d8a;font-size:13px}
@@ -60,164 +64,206 @@ footer{text-align:center;padding:22px;color:#8b9395;font-size:13px}
 <body>
 
 <header>
-  <div class="logo">GLOBAL <span>ENGINE PARTS</span></div>
-  <a href=" ">← Back to Home</a >
+<div class="logo">GLOBAL <span>ENGINE PARTS</span></div>
+<a href=" ">← Back to Home</a >
 </header>
 
 <section class="hero">
-  <small>ENGINE COMPONENTS & SPARE PARTS</small>
-  <h1>Engine Parts</h1>
-  <p>
-    Explore our engine parts catalogue.
-    Search by product name, brand, OEM number, reference number
-    or compatible engine model. Contact us for product availability and quotations.
-  </p >
-</section>
-
-<section class="search-area">
-  <div class="search-box">
-    <input id="searchInput" type="search" placeholder="Search name, OEM number, brand or engine model...">
-    <button type="button" onclick="renderProducts()">Search</button>
-  </div>
+<small>ENGINE COMPONENTS & SPARE PARTS</small>
+<h1>Engine Parts</h1>
+<p>Explore our diesel engine parts catalogue. Browse by component category or search by product name, brand, OEM number and compatible engine model.</p >
 </section>
 
 <main class="container">
-  <div class="heading">
-    <div>
-      <h2>Engine Parts Catalogue</h2>
-      <p>Browse our available engine components and spare parts.</p >
-    </div>
-    <div id="count">Loading...</div>
-  </div>
 
-  <section class="product-grid" id="productGrid">
-    <div class="message">Loading engine parts...</div>
-  </section>
+<section>
+<div class="heading">
+<h2>Browse Engine Parts Categories</h2>
+<p>Select a category to explore the corresponding engine components.</p >
+</div>
+
+<div class="category-grid">
+
+<a class="category-card" href="categories/piston-parts.html">
+<span class="number">01 / ENGINE COMPONENTS</span>
+<h3>Piston & Cylinder Parts</h3>
+<p>Pistons, piston rings, cylinder liners, cylinder blocks and connecting rods.</p >
+<span class="arrow">Browse Parts →</span>
+</a >
+
+<a class="category-card" href="categories/fuel-system.html">
+<span class="number">02 / FUEL SYSTEM</span>
+<h3>Fuel System</h3>
+<p>Fuel injectors, fuel pumps, common rail components and fuel system parts.</p >
+<span class="arrow">Browse Parts →</span>
+</a >
+
+<a class="category-card" href="categories/cooling-system.html">
+<span class="number">03 / COOLING SYSTEM</span>
+<h3>Cooling System</h3>
+<p>Water pumps, thermostats, radiators and engine cooling components.</p >
+<span class="arrow">Browse Parts →</span>
+</a >
+
+<a class="category-card" href="categories/lubrication-system.html">
+<span class="number">04 / LUBRICATION</span>
+<h3>Lubrication System</h3>
+<p>Oil pumps, oil coolers, oil filters and lubrication components.</p >
+<span class="arrow">Browse Parts →</span>
+</a >
+
+<a class="category-card" href="categories/cylinder-head.html">
+<span class="number">05 / CYLINDER HEAD</span>
+<h3>Cylinder Head & Valve Train</h3>
+<p>Cylinder heads, valves, valve guides, rocker arms and related components.</p >
+<span class="arrow">Browse Parts →</span>
+</a >
+
+<a class="category-card" href="categories/electrical-system.html">
+<span class="number">06 / ELECTRICAL</span>
+<h3>Electrical System</h3>
+<p>Starters, alternators, sensors, wiring harnesses and electrical parts.</p >
+<span class="arrow">Browse Parts →</span>
+</a >
+
+<a class="category-card" href="categories/gear-timing.html">
+<span class="number">07 / GEAR & TIMING</span>
+<h3>Gear & Timing System</h3>
+<p>Timing gears, idler gears, camshaft gears and crankshaft gears.</p >
+<span class="arrow">Browse Parts →</span>
+</a >
+
+<a class="category-card" href="categories/gaskets-kits.html">
+<span class="number">08 / GASKETS & KITS</span>
+<h3>Gaskets & Overhaul Kits</h3>
+<p>Head gaskets, gasket sets, seal kits and engine overhaul kits.</p >
+<span class="arrow">Browse Parts →</span>
+</a >
+
+</div>
+</section>
+
+<section class="search-area">
+<div class="heading">
+<h2>All Engine Parts</h2>
+<p>Search our complete engine parts catalogue.</p >
+</div>
+
+<div class="search-box">
+<input id="searchInput" type="search" placeholder="Search name, OEM number, brand or engine model...">
+<button type="button" onclick="renderProducts()">Search</button>
+</div>
+
+<div class="heading">
+<p id="count">Loading...</p >
+</div>
+
+<section class="product-grid" id="productGrid">
+<div class="message">Loading engine parts...</div>
+</section>
+</section>
+
 </main>
 
 <section class="contact">
-  <h2>Need an Engine Part?</h2>
-  <p>Send us your OEM number or engine model. Our team can help you find the right part.</p >
-  <a href="https://wa.me/8617377554610" target="_blank">Request a Quote</a >
+<h2>Need an Engine Part?</h2>
+<p>Send us your OEM number or engine model. Our team can help you find the right part.</p >
+<a href="https://wa.me/8617377554610" target="_blank" rel="noopener">Request a Quote</a >
 </section>
 
 <footer>© Global Engine Parts Supplier. All Rights Reserved.</footer>
 
 <script>
-const grid = document.getElementById("productGrid");
-const searchInput = document.getElementById("searchInput");
-let allProducts = [];
+const grid=document.getElementById("productGrid");
+const searchInput=document.getElementById("searchInput");
+let allProducts=[];
 
 function getText(value){
-  if(value === undefined || value === null) return "";
-  if(Array.isArray(value)) return value.map(getText).join(", ");
-  if(typeof value === "object") return value.name || value.value || "";
+  if(value===undefined||value===null)return "";
+  if(Array.isArray(value))return value.map(getText).join(", ");
+  if(typeof value==="object")return value.name||value.value||"";
   return String(value);
 }
 
 function escapeHTML(value){
-  return String(value).replace(/[&<>"']/g, char => ({
+  return String(value).replace(/[&<>"']/g,char=>({
     "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"
   }[char]));
 }
 
 function renderProducts(){
-  const keyword = searchInput.value.trim().toLowerCase();
+  const keyword=searchInput.value.trim().toLowerCase();
 
-  const filtered = allProducts.filter(product => {
-    const searchable = [
-      product.name,
-      product.brand,
-      product.model,
-      product.oem,
-      product.reference_numbers,
-      product.engine_models,
-      product.description
+  const filtered=allProducts.filter(product=>{
+    const searchable=[
+      product.name,product.brand,product.model,
+      product.oem,product.reference_numbers,
+      product.engine_models,product.description
     ].map(getText).join(" ").toLowerCase();
 
     return searchable.includes(keyword);
   });
 
-  document.getElementById("count").textContent =
-    filtered.length + " products";
+  document.getElementById("count").textContent=filtered.length+" products";
 
   if(!filtered.length){
-    grid.innerHTML = `
-      <div class="message">
-        <h3>No matching engine parts found</h3>
-        <p>Try another OEM number, product name or engine model.</p >
-      </div>`;
+    grid.innerHTML='<div class="message"><h3>No matching engine parts found</h3><p>Try another OEM number, product name or engine model.</p ></div>';
     return;
   }
 
-  grid.innerHTML = filtered.map(product => {
-    const name = getText(product.name);
-    const brand = getText(product.brand);
-    const model = getText(product.model);
-    const oem = getText(product.oem);
-    const refs = getText(product.reference_numbers);
-    const engines = getText(product.engine_models);
-    const image = getText(product.image);
-    const description = getText(product.description)
-      .replace(/<[^>]*>/g," ").slice(0,150);
-    const whatsapp = getText(product.whatsapp) || "8617377554610";
+  grid.innerHTML=filtered.map(product=>{
+    const name=getText(product.name);
+    const brand=getText(product.brand);
+    const model=getText(product.model);
+    const oem=getText(product.oem);
+    const refs=getText(product.reference_numbers);
+    const engines=getText(product.engine_models);
+    const image=getText(product.image);
+    const description=getText(product.description).replace(/<[^>]*>/g," ").slice(0,150);
+    const whatsapp=getText(product.whatsapp)||"8617377554610";
 
-    const detailsUrl = "../product-details.html?type=engine-part&name="
-      + encodeURIComponent(name);
+    const detailsUrl="../product-details.html?type=engine-part&name="+encodeURIComponent(name);
+    const quoteUrl="https://wa.me/"+whatsapp.replace(/\D/g,"")+"?text="+encodeURIComponent("Hello, I am interested in engine part: "+name+(oem?", OEM: "+oem:""));
 
-    const quoteUrl = "https://wa.me/"
-      + whatsapp.replace(/\D/g,"")
-      + "?text=" + encodeURIComponent("Hello, I am interested in engine part: " + name + (oem ? ", OEM: " + oem : ""));
-
-    return `
-      <article class="card">
-        <div class="photo">
-          ${image
-            ? `< img src="${escapeHTML(image)}" alt="${escapeHTML(name)}" loading="lazy">`
-            : `<span>Product Image</span>`}
-        </div>
-        <div class="info">
-          <h3>${escapeHTML(name)}</h3>
-          <div class="spec">
-            ${brand ? `<div><strong>Brand:</strong> ${escapeHTML(brand)}</div>` : ""}
-            ${model ? `<div><strong>Model:</strong> ${escapeHTML(model)}</div>` : ""}
-            ${oem ? `<div><strong>OEM:</strong> ${escapeHTML(oem)}</div>` : ""}
-            ${refs ? `<div><strong>Reference No.:</strong> ${escapeHTML(refs)}</div>` : ""}
-            ${engines ? `<div><strong>Engine Models:</strong> ${escapeHTML(engines)}</div>` : ""}
-          </div>
-          ${description ? `<p class="description">${escapeHTML(description)}</p >` : ""}
-          <div class="actions">
-            <a class="details" href="${detailsUrl}">View Details</a >
-            <a class="quote" href="${quoteUrl}" target="_blank" rel="noopener">Get Quote</a >
-          </div>
-        </div>
-      </article>`;
+    return '<article class="card">'+
+      '<div class="photo">'+
+      (image?'< img src="'+escapeHTML(image)+'" alt="'+escapeHTML(name)+'" loading="lazy">':'<span>Product Image</span>')+
+      '</div>'+
+      '<div class="info">'+
+      '<h3>'+escapeHTML(name)+'</h3>'+
+      '<div class="spec">'+
+      (brand?'<div><strong>Brand:</strong> '+escapeHTML(brand)+'</div>':'')+
+      (model?'<div><strong>Model:</strong> '+escapeHTML(model)+'</div>':'')+
+      (oem?'<div><strong>OEM:</strong> '+escapeHTML(oem)+'</div>':'')+
+      (refs?'<div><strong>Reference No.:</strong> '+escapeHTML(refs)+'</div>':'')+
+      (engines?'<div><strong>Engine Models:</strong> '+escapeHTML(engines)+'</div>':'')+
+      '</div>'+
+      (description?'<p class="description">'+escapeHTML(description)+'</p >':'')+
+      '<div class="actions">'+
+      '<a class="details" href="'+detailsUrl+'">View Details</a >'+
+      '<a class="quote" href="'+quoteUrl+'" target="_blank" rel="noopener">Get Quote</a >'+
+      '</div></div></article>';
   }).join("");
 }
 
-searchInput.addEventListener("input", renderProducts);
+searchInput.addEventListener("input",renderProducts);
 
 fetch("../engine-parts-index.json")
-  .then(response => {
-    if(!response.ok) throw new Error("Engine parts index not found");
-    return response.json();
-  })
-  .then(data => {
-    if(!Array.isArray(data)) throw new Error("Invalid index format");
-    allProducts = data;
-    renderProducts();
-  })
-  .catch(error => {
-    console.error(error);
-    document.getElementById("count").textContent = "Unavailable";
-    grid.innerHTML = `
-      <div class="message">
-        <h3>Unable to load engine parts</h3>
-        <p>Please check the engine parts product index.</p >
-      </div>`;
-  });
+.then(response=>{
+  if(!response.ok)throw new Error("Engine parts index not found");
+  return response.json();
+})
+.then(data=>{
+  if(!Array.isArray(data))throw new Error("Invalid index format");
+  allProducts=data;
+  renderProducts();
+})
+.catch(error=>{
+  console.error(error);
+  document.getElementById("count").textContent="Unavailable";
+  grid.innerHTML='<div class="message"><h3>Unable to load engine parts</h3><p>Please check the engine parts product index.</p ></div>';
+});
 </script>
 
 </body>
 </html>
-
