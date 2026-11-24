@@ -40,9 +40,9 @@ content:
         label: Category Description
         type: text
 
-  # 3. 原有统一产品管理
+  # 3. 涡轮增压器及原有产品管理
   - name: products
-    label: Products（产品管理）
+    label: Products（Turbochargers & Parts）
     type: collection
     path: products
     filename: "{primary}.json"
@@ -52,85 +52,68 @@ content:
         label: Product Name
         type: string
         required: true
-
       - name: brand
         label: Brand
         type: reference
         required: true
         options:
           collection: brands
-
       - name: category
         label: Product Category
         type: reference
         required: true
         options:
           collection: categories
-
       - name: model
         label: Model
         type: string
-
       - name: oem
         label: OEM Part Number
         type: string
-
       - name: image
         label: Product Image
         type: image
-
       - name: images
         label: Product Images
         type: image
         options:
           multiple:
             max: 10
-
       - name: whatsapp
         label: WhatsApp Inquiry
         type: string
-
       - name: oem_numbers
         label: All OEM Part Numbers
         type: string
         list: true
-
       - name: reference_numbers
         label: Reference Numbers
         type: string
         list: true
-
       - name: interchange_numbers
         label: Interchange Numbers
         type: string
         list: true
-
       - name: engine_models
         label: Engine Models
         type: string
         list: true
-
       - name: applications
         label: Applications
         type: string
         list: true
-
       - name: origin
         label: Country of Origin
         type: string
-
       - name: condition
         label: Product Condition
         type: string
-
       - name: warranty
         label: Warranty
         type: text
-
       - name: description
         label: Full Product Description
         type: rich-text
-
       - name: technical_specs
         label: Technical Specifications
         type: object
@@ -143,9 +126,9 @@ content:
             label: Value
             type: string
 
-  # 4. 独立康明斯发动机产品管理
+  # 4. 康明斯发动机管理
   - name: cummins_products
-    label: Cummins Products（康明斯发动机管理）
+    label: Cummins Products（康明斯发动机）
     type: collection
     path: cummins-products
     filename: "{primary}.json"
@@ -155,45 +138,133 @@ content:
         label: Engine Product Name
         type: string
         required: true
-
       - name: series
-        label: Engine Series（ISF / ISD / ISB / QSB）
+        label: Engine Series
         type: string
         required: true
-
       - name: model
         label: Engine Model
         type: string
         required: true
-
       - name: oem
         label: OEM Part Number
         type: string
-
       - name: power
         label: Engine Power
         type: string
-
       - name: image
         label: Main Product Image
         type: image
-
       - name: images
         label: Product Images
         type: image
         options:
           multiple:
             max: 10
-
       - name: description
         label: Engine Description
         type: rich-text
-
       - name: whatsapp
         label: WhatsApp Inquiry
         type: string
 
-  # 5. 独立首页精选产品管理
+  # 5. 发动机配件管理
+  - name: engine_parts
+    label: Engine Parts（发动机配件）
+    type: collection
+    path: engine-parts
+    filename: "{primary}.json"
+    format: json
+    fields:
+      - name: name
+        label: Part Name
+        type: string
+        required: true
+      - name: brand
+        label: Brand
+        type: reference
+        required: true
+        options:
+          collection: brands
+      - name: model
+        label: Part Model
+        type: string
+      - name: oem
+        label: OEM Part Number
+        type: string
+      - name: reference_numbers
+        label: Reference Numbers
+        type: string
+        list: true
+      - name: engine_models
+        label: Compatible Engine Models
+        type: string
+        list: true
+      - name: image
+        label: Main Product Image
+        type: image
+      - name: images
+        label: Product Images
+        type: image
+        options:
+          multiple:
+            max: 10
+      - name: description
+        label: Part Description
+        type: rich-text
+      - name: whatsapp
+        label: WhatsApp Inquiry
+        type: string
+
+  # 6. 工程机械配件管理
+  - name: machinery_parts
+    label: Machinery Parts（工程机械配件）
+    type: collection
+    path: machinery-parts
+    filename: "{primary}.json"
+    format: json
+    fields:
+      - name: name
+        label: Part Name
+        type: string
+        required: true
+      - name: brand
+        label: Brand
+        type: reference
+        required: true
+        options:
+          collection: brands
+      - name: machine_model
+        label: Machinery Model
+        type: string
+      - name: oem
+        label: OEM Part Number
+        type: string
+      - name: reference_numbers
+        label: Reference Numbers
+        type: string
+        list: true
+      - name: applications
+        label: Applications
+        type: string
+        list: true
+      - name: image
+        label: Main Product Image
+        type: image
+      - name: images
+        label: Product Images
+        type: image
+        options:
+          multiple:
+            max: 10
+      - name: description
+        label: Part Description
+        type: rich-text
+      - name: whatsapp
+        label: WhatsApp Inquiry
+        type: string
+
+  # 7. 首页精选产品管理
   - name: featured_products
     label: Featured Products（首页精选产品）
     type: file
@@ -202,11 +273,10 @@ content:
     list: true
     fields:
       - name: model
-        label: Product Model（产品型号）
+        label: Product Model
         type: string
         required: true
-
       - name: image
-        label: Product Image（产品图片）
+        label: Product Image
         type: image
         required: true
