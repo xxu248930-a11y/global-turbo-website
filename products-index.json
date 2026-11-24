@@ -110,8 +110,9 @@
   {
     "name": "HX35 ",
     "brand": "Holset",
+    "category": "categories/turbocharger.json",
     "model": "hx35",
-    "oem": " 2835040, 3790293, 3790294, 4033239, 403323900, 403323900H, 99",
+    "oem": " 2835040",
     "image": "/media/微信图片_20260903154321_3010_4-5.jpg",
     "images": [
       "/media/微信图片_20260903154321_3010_4-3.jpg",
