@@ -1,12 +1,12 @@
-
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
 <title>Diesel Engine Fuel System Parts | Global Engine Parts Supplier</title>
-<meta name="description" content="Browse genuine diesel fuel injectors, fuel pumps, injection pumps and common rail components for Cummins, Perkins and other diesel engines.">
+
+<meta name="description" content="Diesel fuel injectors, fuel pumps, injection pumps and common rail components.">
 
 <style>
 *{box-sizing:border-box}
@@ -25,10 +25,11 @@ header a{color:white;text-decoration:none;font-size:14px}
 .section-title p{color:#737d87;line-height:1.7}
 .product-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:22px}
 .product-card{background:white;border:1px solid #e3e7ea;border-radius:7px;overflow:hidden}
-.product-image{height:240px;background:#eef1f3;overflow:hidden}
+.product-image{height:240px;background:#eef1f3;overflow:hidden;display:flex;align-items:center;justify-content:center}
 .product-image img{width:100%;height:100%;object-fit:contain;display:block}
+.no-image{color:#89939c;font-size:14px}
 .product-info{padding:18px}
-.product-info h3{font-size:18px;margin:0 0 12px}
+.product-info h3{font-size:18px;margin:0 0 12px;overflow-wrap:anywhere}
 .spec{font-size:13px;color:#68747e;line-height:1.9}
 .description{font-size:13px;color:#77818a;line-height:1.7}
 .actions{display:flex;gap:9px;margin-top:16px}
@@ -73,69 +74,163 @@ footer{text-align:center;background:#202a33;color:#aeb8c0;padding:24px;font-size
 <footer>© Global Engine Parts Supplier. All Rights Reserved.</footer>
 
 <script>
-const grid=document.getElementById("productGrid");
+var grid = document.getElementById("productGrid");
 
 function getText(value){
-if(value===undefined||value===null)return "";
-if(typeof value==="object")return value.name||value.value||"";
-return String(value);
+    if(value === undefined || value === null) return "";
+    if(typeof value === "object"){
+        return value.name || value.value || "";
+    }
+    return String(value);
+}
+
+function addSpec(parent, label, value){
+    if(!value) return;
+
+    var line = document.createElement("div");
+    var strong = document.createElement("strong");
+
+    strong.textContent = label + ": ";
+    line.appendChild(strong);
+    line.appendChild(document.createTextNode(value));
+    parent.appendChild(line);
 }
 
 function renderProducts(products){
-if(!products.length){
-grid.innerHTML='<div class="empty"><h3>No fuel system products available yet</h3><p>Please check back later or contact us for product inquiries.</p ></div>';
-return;
-}
 
-grid.innerHTML=products.map(product=>{
-const name=getText(product.name);
-const model=getText(product.model);
-const oem=getText(product.oem);
-const brand=getText(product.brand);
-const image=getText(product.image);
-const description=getText(product.description);
-const detailsUrl="../../product-details.html?type=engine-part&name="+encodeURIComponent(name);
+    grid.innerHTML = "";
 
-return `
-<article class="product-card">
-<div class="product-image">
-${image?`< img src="${image}" alt="${name}" loading="lazy">`:"<div style="padding:30px;text-align:center">No image</div>"}
-</div>
-<div class="product-info">
-<h3>${name}</h3>
-<div class="spec">
-${brand?`<div><strong>Brand:</strong> ${brand}</div>`:""}
-${model?`<div><strong>Engine Model:</strong> ${model}</div>`:""}
-${oem?`<div><strong>OEM Number:</strong> ${oem}</div>`:""}
-</div>
-${description?`<p class="description">${description.replace(/<[^>]*>/g," ").slice(0,150)}</p >`:""}
-<div class="actions">
-<a class="details" href="${detailsUrl}">View Details</a >
-<a class="quote" href="https://wa.me/8617377554610?text=${encodeURIComponent("Hello, I am interested in "+name)}" target="_blank" rel="noopener">Get Quote</a >
-</div>
-</div>
-</article>`;
-}).join("");
+    if(!products.length){
+        var empty = document.createElement("div");
+        empty.className = "empty";
+        empty.innerHTML = "<h3>No fuel system products available yet</h3><p>Please check back later or contact us for product inquiries.</p >";
+        grid.appendChild(empty);
+        return;
+    }
+
+    products.forEach(function(product){
+
+        var name = getText(product.name);
+        var model = getText(product.model);
+        var oem = getText(product.oem);
+        var brand = getText(product.brand);
+        var image = getText(product.image);
+        var description = getText(product.description);
+
+        var card = document.createElement("article");
+        card.className = "product-card";
+
+        var imageBox = document.createElement("div");
+        imageBox.className = "product-image";
+
+        if(image){
+            var img = document.createElement("img");
+            img.src = image;
+            img.alt = name;
+            img.loading = "lazy";
+
+            img.onerror = function(){
+                imageBox.innerHTML = "";
+                var message = document.createElement("span");
+                message.className = "no-image";
+                message.textContent = "Image unavailable";
+                imageBox.appendChild(message);
+            };
+
+            imageBox.appendChild(img);
+        }else{
+            var noImage = document.createElement("span");
+            noImage.className = "no-image";
+            noImage.textContent = "No product image";
+            imageBox.appendChild(noImage);
+        }
+
+        var info = document.createElement("div");
+        info.className = "product-info";
+
+        var title = document.createElement("h3");
+        title.textContent = name;
+        info.appendChild(title);
+
+        var spec = document.createElement("div");
+        spec.className = "spec";
+
+        addSpec(spec, "Brand", brand);
+        addSpec(spec, "Engine Model", model);
+        addSpec(spec, "OEM Number", oem);
+
+        info.appendChild(spec);
+
+        if(description){
+            var desc = document.createElement("p");
+            desc.className = "description";
+            desc.textContent = description.replace(/<[^>]*>/g," ").slice(0,150);
+            info.appendChild(desc);
+        }
+
+        var actions = document.createElement("div");
+        actions.className = "actions";
+
+        var details = document.createElement("a");
+        details.className = "details";
+        details.textContent = "View Details";
+        details.href = "../../product-details.html?type=engine-part&name=" + encodeURIComponent(name);
+
+        var quote = document.createElement("a");
+        quote.className = "quote";
+        quote.textContent = "Get Quote";
+        quote.href = "https://wa.me/8617377554610?text=" + encodeURIComponent("Hello, I am interested in " + name);
+        quote.target = "_blank";
+        quote.rel = "noopener";
+
+        actions.appendChild(details);
+        actions.appendChild(quote);
+
+        info.appendChild(actions);
+        card.appendChild(imageBox);
+        card.appendChild(info);
+
+        grid.appendChild(card);
+    });
 }
 
 fetch("../../engine-parts-index.json")
-.then(response=>{
-if(!response.ok)throw new Error("Product index not found");
-return response.json();
+.then(function(response){
+    if(!response.ok){
+        throw new Error("Product index not found");
+    }
+    return response.json();
 })
-.then(data=>{
-const products=Array.isArray(data)?data:[];
-const keywords=["fuel injector","injector","fuel pump","injection pump","common rail","fuel filter","fuel system"];
-const filtered=products.filter(product=>{
-const category=getText(product.category).toLowerCase();
-const name=getText(product.name).toLowerCase();
-return keywords.some(keyword=>category.includes(keyword)||name.includes(keyword));
-});
-renderProducts(filtered);
+.then(function(data){
+
+    var products = Array.isArray(data) ? data : [];
+
+    var keywords = [
+        "fuel injector",
+        "injector",
+        "fuel pump",
+        "injection pump",
+        "common rail",
+        "fuel filter",
+        "fuel system"
+    ];
+
+    var filtered = products.filter(function(product){
+
+        var category = getText(product.category).toLowerCase();
+        var name = getText(product.name).toLowerCase();
+
+        return keywords.some(function(keyword){
+            return category.includes(keyword) || name.includes(keyword);
+        });
+    });
+
+    renderProducts(filtered);
 })
-.catch(error=>{
-console.error("Fuel system loading error:",error);
-grid.innerHTML='<div class="empty">Unable to load products. Please check the product index file.</div>';
+.catch(function(error){
+    console.error("Fuel system loading error:", error);
+
+    grid.innerHTML = "<div class='empty'>Unable to load products. Please check the product index file.</div>";
 });
 </script>
 
