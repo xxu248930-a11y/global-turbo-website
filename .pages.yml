@@ -1,5 +1,4 @@
 
-
 media:
   input: media
   output: /media
@@ -41,7 +40,7 @@ content:
         label: Category Description
         type: text
 
-  # 3. 统一产品管理
+  # 3. 原有统一产品管理
   - name: products
     label: Products（产品管理）
     type: collection
@@ -53,7 +52,7 @@ content:
         label: Product Name
         type: string
         required: true
-     
+
       - name: brand
         label: Brand
         type: reference
@@ -143,8 +142,58 @@ content:
           - name: value
             label: Value
             type: string
-            
-  # 4. 独立首页精选产品管理
+
+  # 4. 独立康明斯发动机产品管理
+  - name: cummins_products
+    label: Cummins Products（康明斯发动机管理）
+    type: collection
+    path: cummins-products
+    filename: "{primary}.json"
+    format: json
+    fields:
+      - name: name
+        label: Engine Product Name
+        type: string
+        required: true
+
+      - name: series
+        label: Engine Series（ISF / ISD / ISB / QSB）
+        type: string
+        required: true
+
+      - name: model
+        label: Engine Model
+        type: string
+        required: true
+
+      - name: oem
+        label: OEM Part Number
+        type: string
+
+      - name: power
+        label: Engine Power
+        type: string
+
+      - name: image
+        label: Main Product Image
+        type: image
+
+      - name: images
+        label: Product Images
+        type: image
+        options:
+          multiple:
+            max: 10
+
+      - name: description
+        label: Engine Description
+        type: rich-text
+
+      - name: whatsapp
+        label: WhatsApp Inquiry
+        type: string
+
+  # 5. 独立首页精选产品管理
   - name: featured_products
     label: Featured Products（首页精选产品）
     type: file
