@@ -9,6 +9,8 @@ on:
       - 'products/**'
       - 'brands/**'
       - 'cummins-products/**'
+      - 'engine-parts/**'
+      - 'machinery-parts/**'
       - '.github/workflows/build-product-index.yml'
   workflow_dispatch:
 
@@ -25,7 +27,7 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Generate all product and brand indexes
+      - name: Generate all product indexes
         run: |
           node <<'NODE'
           const fs = require("fs");
@@ -53,17 +55,27 @@ jobs:
             }
           }
 
-          // 1. Original products
-          const products = [];
+          function generateIndex(directory, outputFile, label) {
+            const items = [];
 
-          scanJson("products", (data, file) => {
-            products.push(data);
-            console.log("Added product:", file);
-          });
+            scanJson(directory, (data, file) => {
+              items.push(data);
+              console.log("Added " + label + ":", file);
+            });
 
-          fs.writeFileSync(
+            fs.writeFileSync(
+              outputFile,
+              JSON.stringify(items, null, 2) + "\n"
+            );
+
+            console.log("TOTAL " + label + ":", items.length);
+          }
+
+          // 1. Original turbochargers and products
+          generateIndex(
+            "products",
             "products-index.json",
-            JSON.stringify(products, null, 2) + "\n"
+            "PRODUCTS"
           );
 
           // 2. Brands
@@ -81,22 +93,28 @@ jobs:
             JSON.stringify(brands, null, 2) + "\n"
           );
 
-          // 3. Cummins engine products
-          const cumminsProducts = [];
+          console.log("TOTAL BRANDS:", brands.length);
 
-          scanJson("cummins-products", (data, file) => {
-            cumminsProducts.push(data);
-            console.log("Added Cummins product:", file);
-          });
-
-          fs.writeFileSync(
+          // 3. Cummins engines
+          generateIndex(
+            "cummins-products",
             "cummins-products-index.json",
-            JSON.stringify(cumminsProducts, null, 2) + "\n"
+            "CUMMINS PRODUCTS"
           );
 
-          console.log("TOTAL PRODUCTS:", products.length);
-          console.log("TOTAL BRANDS:", brands.length);
-          console.log("TOTAL CUMMINS PRODUCTS:", cumminsProducts.length);
+          // 4. Engine parts
+          generateIndex(
+            "engine-parts",
+            "engine-parts-index.json",
+            "ENGINE PARTS"
+          );
+
+          // 5. Construction machinery parts
+          generateIndex(
+            "machinery-parts",
+            "machinery-parts-index.json",
+            "MACHINERY PARTS"
+          );
           NODE
 
       - name: Save generated indexes
@@ -104,11 +122,15 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
 
-          git add -f products-index.json brands-index.json cummins-products-index.json
+          git add -f products-index.json
+          git add -f brands-index.json
+          git add -f cummins-products-index.json
+          git add -f engine-parts-index.json
+          git add -f machinery-parts-index.json
 
           if git diff --cached --quiet; then
             echo "Indexes are already up to date."
           else
-            git commit -m "Automatically update product indexes"
+            git commit -m "Automatically update all product indexes"
             git push
           fi
