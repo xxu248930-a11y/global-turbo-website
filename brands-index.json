@@ -4,6 +4,10 @@
     "description": "Genuine BorgWarner\nTurbochargers and Turbo Parts"
   },
   {
+    "name": "CAT",
+    "description": "Caterpillar turbocharger"
+  },
+  {
     "name": "Garrett",
     "description": "Genuine Garrett Turbochargers\nand Turbo Parts"
   },
