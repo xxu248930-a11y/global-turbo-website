@@ -1,5 +1,12 @@
-
 {
-  "products": []
+  "name": "350",
+  "series": "QSB",
+  "model": "HHSS",
+  "oem": "2835039",
+  "power": "HHSS",
+  "image": "/media/3-2.jpg",
+  "images": [
+    "/media/2-1.jpg"
+  ],
+  "whatsapp": "8617377554610"
 }
-
