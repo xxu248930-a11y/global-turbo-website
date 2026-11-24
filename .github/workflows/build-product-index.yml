@@ -8,6 +8,7 @@ on:
     paths:
       - 'products/**'
       - 'brands/**'
+      - 'cummins-products/**'
       - '.github/workflows/build-product-index.yml'
   workflow_dispatch:
 
@@ -24,86 +25,78 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Generate product and brand indexes
+      - name: Generate all product and brand indexes
         run: |
           node <<'NODE'
           const fs = require("fs");
           const path = require("path");
 
-          // 1. Generate product index
-          const products = [];
-
-          function scanProducts(dir) {
+          function scanJson(dir, callback) {
             if (!fs.existsSync(dir)) return;
 
             for (const item of fs.readdirSync(dir, { withFileTypes: true })) {
               const file = path.join(dir, item.name);
 
               if (item.isDirectory()) {
-                scanProducts(file);
+                scanJson(file, callback);
               } else if (item.isFile() && item.name.endsWith(".json")) {
                 try {
                   const data = JSON.parse(fs.readFileSync(file, "utf8"));
 
                   if (data && typeof data === "object" && !Array.isArray(data)) {
-                    products.push(data);
-                    console.log("Added product:", file);
+                    callback(data, file);
                   }
                 } catch (error) {
-                  console.log("Skipped invalid product JSON:", file);
+                  console.log("Skipped invalid JSON:", file);
                 }
               }
             }
           }
 
-          scanProducts("products");
+          // 1. Original products
+          const products = [];
+
+          scanJson("products", (data, file) => {
+            products.push(data);
+            console.log("Added product:", file);
+          });
 
           fs.writeFileSync(
             "products-index.json",
             JSON.stringify(products, null, 2) + "\n"
           );
 
-          // 2. Generate brand index
+          // 2. Brands
           const brands = [];
 
-          function scanBrands(dir) {
-            if (!fs.existsSync(dir)) return;
-
-            for (const item of fs.readdirSync(dir, { withFileTypes: true })) {
-              const file = path.join(dir, item.name);
-
-              if (item.isDirectory()) {
-                scanBrands(file);
-              } else if (item.isFile() && item.name.endsWith(".json")) {
-                try {
-                  const data = JSON.parse(fs.readFileSync(file, "utf8"));
-
-                  if (
-                    data &&
-                    typeof data === "object" &&
-                    !Array.isArray(data) &&
-                    typeof data.name === "string" &&
-                    data.name.trim()
-                  ) {
-                    brands.push(data);
-                    console.log("Added brand:", data.name);
-                  }
-                } catch (error) {
-                  console.log("Skipped invalid brand JSON:", file);
-                }
-              }
+          scanJson("brands", (data, file) => {
+            if (typeof data.name === "string" && data.name.trim()) {
+              brands.push(data);
+              console.log("Added brand:", data.name);
             }
-          }
-
-          scanBrands("brands");
+          });
 
           fs.writeFileSync(
             "brands-index.json",
             JSON.stringify(brands, null, 2) + "\n"
           );
 
+          // 3. Cummins engine products
+          const cumminsProducts = [];
+
+          scanJson("cummins-products", (data, file) => {
+            cumminsProducts.push(data);
+            console.log("Added Cummins product:", file);
+          });
+
+          fs.writeFileSync(
+            "cummins-products-index.json",
+            JSON.stringify(cumminsProducts, null, 2) + "\n"
+          );
+
           console.log("TOTAL PRODUCTS:", products.length);
           console.log("TOTAL BRANDS:", brands.length);
+          console.log("TOTAL CUMMINS PRODUCTS:", cumminsProducts.length);
           NODE
 
       - name: Save generated indexes
@@ -111,11 +104,11 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
 
-          git add -f products-index.json brands-index.json
+          git add -f products-index.json brands-index.json cummins-products-index.json
 
           if git diff --cached --quiet; then
             echo "Indexes are already up to date."
           else
-            git commit -m "Automatically update product and brand indexes"
+            git commit -m "Automatically update product indexes"
             git push
           fi
