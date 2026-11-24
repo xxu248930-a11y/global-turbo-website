@@ -1,0 +1,21 @@
+{
+  "name": "上汽大通 Garrett 53039707246",
+  "brand": "brands/garrett.json",
+  "category": "categories/turbocharger.json",
+  "model": "06RG 550",
+  "oem": "53039707246",
+  "image": "/media/1.jpg",
+  "images": [
+    "/media/1-1.jpg",
+    "/media/2.jpg",
+    "/media/3.jpg",
+    "/media/12.png"
+  ],
+  "whatsapp": "8617377554610",
+  "oem_numbers": [
+    "06R 145 874 53039707246",
+    "PIN 0442FBBE BWC",
+    "BC 9210016826 001"
+  ],
+  "origin": "中国"
+}
