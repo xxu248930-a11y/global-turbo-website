@@ -222,7 +222,7 @@ content:
     label: Machinery Categories（工程机械类别管理）
     type: collection
     path: machinery-categories
-    filename: "{primary}.json"
+    filename: "{fields.slug}.json"
     format: json
     fields:
       - name: name
