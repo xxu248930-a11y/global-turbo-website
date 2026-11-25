@@ -1,1 +1,274 @@
 
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Machinery Parts Category</title>
+<meta name="description" content="Browse construction machinery spare parts by category.">
+
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:Arial,sans-serif;color:#202630;background:#fff}
+header{background:#202630;padding:18px 6%;color:white}
+header a{color:white;text-decoration:none;font-weight:bold}
+.hero{background:linear-gradient(120deg,#202630,#46515f);color:white;padding:55px 6%}
+.hero small{color:#ff7777;letter-spacing:2px;font-weight:bold}
+.hero h1{font-size:36px;margin:15px 0}
+.hero p{max-width:760px;line-height:1.8;color:#e0e4e9}
+.container{max-width:1250px;margin:auto;padding:40px 6%}
+.back{display:inline-block;color:#e52b2b;text-decoration:none;margin-bottom:25px;font-weight:bold}
+.search{display:flex;gap:10px;margin:22px 0}
+.search input{flex:1;min-width:0;padding:14px;border:1px solid #ddd;border-radius:5px;font-size:15px}
+.search button{background:#e52b2b;color:white;border:0;padding:0 24px;border-radius:5px;cursor:pointer}
+.status{color:#697586;margin:15px 0;font-size:14px}
+.products{display:grid;grid-template-columns:repeat(3,1fr);gap:22px}
+.product{border:1px solid #e5e7eb;border-radius:8px;overflow:hidden}
+.product-image{height:215px;background:#f5f6f8;display:flex;align-items:center;justify-content:center}
+.product-image img{width:100%;height:100%;object-fit:contain;padding:12px}
+.no-image{color:#999}
+.product-info{padding:18px}
+.product-info h3{font-size:17px;margin-bottom:12px;overflow-wrap:anywhere}
+.product-info p{font-size:13px;color:#697586;line-height:1.7;margin:5px 0;overflow-wrap:anywhere}
+.details{display:inline-block;margin-top:15px;background:#e52b2b;color:white;text-decoration:none;padding:10px 17px;border-radius:5px;font-size:13px}
+.empty{grid-column:1/-1;text-align:center;background:#f4f6f8;padding:40px 15px;border-radius:8px;color:#697586;line-height:1.8}
+footer{background:#202630;color:#ddd;text-align:center;padding:28px 6%;font-size:13px;line-height:1.8}
+@media(max-width:850px){.products{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:550px){.products{grid-template-columns:1fr}.hero h1{font-size:28px}.search{flex-direction:column}.search button{padding:13px}}
+</style>
+</head>
+
+<body>
+
+<header>
+<a href=" ">GLOBAL MACHINERY PARTS SUPPLIER</a >
+</header>
+
+<section class="hero">
+<small>CONSTRUCTION & INDUSTRIAL EQUIPMENT</small>
+<h1 id="categoryName">Loading Category...</h1>
+<p id="categoryDescription">Loading category information...</p >
+</section>
+
+<main class="container">
+
+<a class="back" href="../machinery-parts.html">← Back to Machinery Categories</a >
+
+<h2>Available Parts</h2>
+
+<div class="search">
+<input type="search" id="searchInput" placeholder="Search part name, OEM number or model...">
+<button type="button" id="searchButton">Search</button>
+</div>
+
+<div id="status" class="status">Loading products...</div>
+<div id="products" class="products"></div>
+
+</main>
+
+<footer>
+Global Machinery Parts Supplier<br>
+Construction Machinery & Industrial Equipment Spare Parts
+</footer>
+
+<script>
+let allProducts = [];
+let currentCategory = null;
+
+function normalize(value){
+  return String(value || "")
+    .toLowerCase()
+    .trim()
+    .replace(/[^a-z0-9\u4e00-\u9fa5]+/g,"-")
+    .replace(/^-|-$/g,"");
+}
+
+function getCategoryName(value){
+  if(typeof value === "string") return value;
+  if(value && typeof value === "object"){
+    return value.name || value.slug || value.value || "";
+  }
+  return "";
+}
+
+function getProductText(item){
+  return [
+    item.name,
+    item.brand,
+    item.model,
+    item.oem,
+    item.machine_model,
+    item.applications,
+    item.description,
+    item.reference_numbers,
+    getCategoryName(item.category)
+  ].flat().filter(Boolean).join(" ").toLowerCase();
+}
+
+function matchesCategory(item){
+  const productCategory = normalize(getCategoryName(item.category));
+  const productSlug = normalize(
+    item.category && typeof item.category === "object"
+      ? item.category.slug
+      : ""
+  );
+
+  return productCategory === normalize(currentCategory.name) ||
+         productCategory === normalize(currentCategory.slug) ||
+         productSlug === normalize(currentCategory.slug);
+}
+
+function showError(message){
+  document.getElementById("status").textContent = message;
+  document.getElementById("products").innerHTML =
+    '<div class="empty">' + message + '</div>';
+}
+
+async function loadPage(){
+  const params = new URLSearchParams(window.location.search);
+  const slug = params.get("slug");
+
+  if(!slug){
+    showError("Category not specified. Please return to the machinery categories page.");
+    return;
+  }
+
+  try{
+    const [categoryResponse,productResponse] = await Promise.all([
+      fetch("../../machinery-categories-index.json?v=" + Date.now()),
+      fetch("../../machinery-parts-index.json?v=" + Date.now())
+    ]);
+
+    if(!categoryResponse.ok) throw new Error("Category index could not be loaded.");
+    if(!productResponse.ok) throw new Error("Product index could not be loaded.");
+
+    const categoryData = await categoryResponse.json();
+    const productData = await productResponse.json();
+
+    const categories = Array.isArray(categoryData)
+      ? categoryData
+      : (categoryData.categories || []);
+
+    allProducts = Array.isArray(productData)
+      ? productData
+      : (productData.products || []);
+
+    currentCategory = categories.find(category =>
+      normalize(category.slug || category.name) === normalize(slug)
+    );
+
+    if(!currentCategory){
+      document.getElementById("categoryName").textContent = "Category Not Found";
+      document.getElementById("categoryDescription").textContent =
+        "This category may have been removed or its address may be incorrect.";
+      showError("The requested category was not found.");
+      return;
+    }
+
+    document.title = currentCategory.name + " | Machinery Parts";
+
+    document.getElementById("categoryName").textContent =
+      currentCategory.name;
+
+    document.getElementById("categoryDescription").textContent =
+      currentCategory.description || "Browse available parts in this category.";
+
+    renderProducts();
+
+  }catch(error){
+    console.error(error);
+    showError("Unable to load category or product data. Please try again later.");
+  }
+}
+
+function renderProducts(){
+  const keyword = document.getElementById("searchInput").value
+    .trim().toLowerCase();
+
+  const container = document.getElementById("products");
+  const status = document.getElementById("status");
+
+  const filtered = allProducts.filter(item =>
+    matchesCategory(item) && getProductText(item).includes(keyword)
+  );
+
+  container.innerHTML = "";
+
+  if(filtered.length === 0){
+    status.textContent = "No matching products found.";
+    container.innerHTML =
+      '<div class="empty">No products have been added to this category yet.</div>';
+    return;
+  }
+
+  status.textContent = "Showing " + filtered.length + " products.";
+
+  filtered.forEach(item => {
+    const card = document.createElement("article");
+    card.className = "product";
+
+    const image = item.image || (
+      Array.isArray(item.images) ? item.images[0] : ""
+    );
+
+    const name = item.name || item.model || "Machinery Part";
+    const id = item.id || item.slug || item.name || "";
+
+    const imageBox = document.createElement("div");
+    imageBox.className = "product-image";
+
+    if(image){
+      const img = document.createElement("img");
+      img.src = image;
+      img.alt = name;
+      img.onerror = () => {
+        imageBox.innerHTML = '<span class="no-image">Image unavailable</span>';
+      };
+      imageBox.appendChild(img);
+    }else{
+      imageBox.innerHTML = '<span class="no-image">Product Image</span>';
+    }
+
+    const info = document.createElement("div");
+    info.className = "product-info";
+
+    const title = document.createElement("h3");
+    title.textContent = name;
+    info.appendChild(title);
+
+    [
+      ["Brand",item.brand],
+      ["OEM Number",item.oem],
+      ["Machine Model",item.machine_model || item.model],
+      ["Applications",item.applications]
+    ].forEach(([label,value]) => {
+      if(value){
+        const p = document.createElement("p");
+        p.textContent = label + ": " +
+          (Array.isArray(value) ? value.join(", ") : value);
+        info.appendChild(p);
+      }
+    });
+
+    const link = document.createElement("a");
+    link.className = "details";
+    link.href = "../../product-details.html?type=machinery-part&id=" +
+      encodeURIComponent(id);
+    link.textContent = "View Details →";
+
+    info.appendChild(link);
+    card.appendChild(imageBox);
+    card.appendChild(info);
+    container.appendChild(card);
+  });
+}
+
+document.getElementById("searchButton").addEventListener("click",renderProducts);
+document.getElementById("searchInput").addEventListener("input",renderProducts);
+
+loadPage();
+</script>
+
+</body>
+</html>
+
