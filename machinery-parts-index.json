@@ -1,5 +1,20 @@
 [
   {
+    "name": "555",
+    "brand": "日标",
+    "category": "machinery-categories/3.json",
+    "machine_model": "；p'p",
+    "oem": "5555555",
+    "reference_numbers": [
+      "555555"
+    ],
+    "applications": [
+      "666"
+    ],
+    "image": "/media/微信图片_20261125124300_4444_4.jpg",
+    "whatsapp": "8617377554610"
+  },
+  {
     "name": "PC56 回转减速器总成",
     "brand": "日标",
     "category": "machinery-categories/pc56.json",
