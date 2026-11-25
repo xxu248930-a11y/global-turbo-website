@@ -260,7 +260,10 @@ content:
 
       - name: category
         label: Machinery Category
-        type: string
+        type: reference
+        required: true
+        options:
+          collection: machinery_categories
 
       - name: machine_model
         label: Machinery Model
