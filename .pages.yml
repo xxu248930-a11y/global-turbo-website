@@ -24,7 +24,7 @@ content:
         label: Brand Logo
         type: image
 
-  # 2. 产品分类管理（原有）
+  # 2. 产品分类管理
   - name: categories
     label: Categories（产品分类）
     type: collection
@@ -216,30 +216,7 @@ content:
         label: WhatsApp Inquiry
         type: string
 
-  # 6. 工程机械分类管理（新增）
-  - name: machinery_categories
-    label: Machinery Categories（工程机械分类管理）
-    type: collection
-    path: machinery-categories
-    filename: "{primary}.json"
-    format: json
-    fields:
-      - name: name
-        label: Category Name
-        type: string
-        required: true
-      - name: slug
-        label: Category URL Slug
-        type: string
-        required: true
-      - name: description
-        label: Category Description
-        type: text
-      - name: image
-        label: Category Image
-        type: image
-
-  # 7. 工程机械配件管理
+  # 6. 工程机械配件管理
   - name: machinery_parts
     label: Machinery Parts（工程机械配件）
     type: collection
@@ -257,12 +234,6 @@ content:
         required: true
         options:
           collection: brands
-      - name: category
-        label: Machinery Category（工程机械分类）
-        type: reference
-        required: true
-        options:
-          collection: machinery_categories
       - name: machine_model
         label: Machinery Model
         type: string
@@ -293,7 +264,7 @@ content:
         label: WhatsApp Inquiry
         type: string
 
-  # 8. 首页精选产品管理
+  # 7. 首页精选产品管理
   - name: featured_products
     label: Featured Products（首页精选产品）
     type: file
