@@ -216,9 +216,9 @@ content:
         label: WhatsApp Inquiry
         type: string
 
-  # 6. 工程机械配件管理
+ # 6. 工程机械配件产品管理（唯一上传入口）
   - name: machinery_parts
-    label: Machinery Parts（工程机械配件）
+    label: Machinery Parts（工程机械配件上传）
     type: collection
     path: machinery-parts
     filename: "{primary}.json"
@@ -234,6 +234,12 @@ content:
         required: true
         options:
           collection: brands
+      - name: category
+        label: Machinery Category（所属工程机械分类）
+        type: reference
+        required: true
+        options:
+          collection: machinery_categories
       - name: machine_model
         label: Machinery Model
         type: string
