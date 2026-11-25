@@ -11,6 +11,7 @@ on:
       - 'cummins-products/**'
       - 'engine-parts/**'
       - 'machinery-parts/**'
+      - 'machinery-categories/**'
       - '.github/workflows/build-product-index.yml'
   workflow_dispatch:
 
@@ -27,7 +28,7 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Generate all product indexes
+      - name: Generate all product and category indexes
         run: |
           node <<'NODE'
           const fs = require("fs");
@@ -115,6 +116,13 @@ jobs:
             "machinery-parts-index.json",
             "MACHINERY PARTS"
           );
+
+          // 6. Construction machinery categories
+          generateIndex(
+            "machinery-categories",
+            "machinery-categories-index.json",
+            "MACHINERY CATEGORIES"
+          );
           NODE
 
       - name: Save generated indexes
@@ -127,10 +135,11 @@ jobs:
           git add -f cummins-products-index.json
           git add -f engine-parts-index.json
           git add -f machinery-parts-index.json
+          git add -f machinery-categories-index.json
 
           if git diff --cached --quiet; then
             echo "Indexes are already up to date."
           else
-            git commit -m "Automatically update all product indexes"
+            git commit -m "Automatically update all product and category indexes"
             git push
           fi
