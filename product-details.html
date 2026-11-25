@@ -4,287 +4,611 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Machinery Parts Category</title>
-<meta name="description" content="Browse construction machinery spare parts by category.">
+<title>Product Details | Global Turbo Supplier</title>
 
 <style>
-*{box-sizing:border-box;margin:0;padding:0}
-body{font-family:Arial,sans-serif;color:#202630;background:#fff}
-header{background:#202630;padding:18px 6%;color:white}
-header a{color:white;text-decoration:none;font-weight:bold}
-.hero{background:linear-gradient(120deg,#202630,#46515f);color:white;padding:55px 6%}
-.hero small{color:#ff7777;letter-spacing:2px;font-weight:bold}
-.hero h1{font-size:36px;margin:15px 0}
-.hero p{max-width:760px;line-height:1.8;color:#e0e4e9}
-.container{max-width:1250px;margin:auto;padding:40px 6%}
-.back{display:inline-block;color:#e52b2b;text-decoration:none;margin-bottom:25px;font-weight:bold}
-.search{display:flex;gap:10px;margin:22px 0}
-.search input{flex:1;min-width:0;padding:14px;border:1px solid #ddd;border-radius:5px;font-size:15px}
-.search button{background:#e52b2b;color:white;border:0;padding:0 24px;border-radius:5px;cursor:pointer}
-.status{color:#697586;margin:15px 0;font-size:14px}
-.products{display:grid;grid-template-columns:repeat(3,1fr);gap:22px}
-.product{border:1px solid #e5e7eb;border-radius:8px;overflow:hidden}
-.product-image{height:215px;background:#f5f6f8;display:flex;align-items:center;justify-content:center}
-.product-image img{width:100%;height:100%;object-fit:contain;padding:12px}
-.no-image{color:#999}
-.product-info{padding:18px}
-.product-info h3{font-size:17px;margin-bottom:12px;overflow-wrap:anywhere}
-.product-info p{font-size:13px;color:#697586;line-height:1.7;margin:5px 0;overflow-wrap:anywhere}
-.details{display:inline-block;margin-top:15px;background:#e52b2b;color:white;text-decoration:none;padding:10px 17px;border-radius:5px;font-size:13px}
-.empty{grid-column:1/-1;text-align:center;background:#f4f6f8;padding:40px 15px;border-radius:8px;color:#697586;line-height:1.8}
-footer{background:#202630;color:#ddd;text-align:center;padding:28px 6%;font-size:13px;line-height:1.8}
-@media(max-width:850px){.products{grid-template-columns:repeat(2,1fr)}}
-@media(max-width:550px){.products{grid-template-columns:1fr}.hero h1{font-size:28px}.search{flex-direction:column}.search button{padding:13px}}
+* { box-sizing: border-box; }
+
+:root {
+  --red: #ed1c24;
+  --dark: #292d33;
+  --muted: #858d98;
+  --border: #e8e9ec;
+  --light: #f7f8fa;
+}
+
+body {
+  margin: 0;
+  font-family: Arial, Helvetica, sans-serif;
+  color: var(--dark);
+  background: #fff;
+}
+
+a { text-decoration: none; }
+
+.site-header {
+  padding: 15px 5%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 15px;
+  background: #fff;
+  border-bottom: 1px solid var(--border);
+  box-shadow: 0 2px 12px rgba(0,0,0,.04);
+}
+
+.logo {
+  color: #222;
+  font-size: 19px;
+  font-weight: 800;
+}
+
+.logo span { color: var(--red); }
+
+nav {
+  display: flex;
+  align-items: center;
+  gap: 22px;
+}
+
+nav a {
+  color: #444;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+nav a:hover { color: var(--red); }
+
+.contact-link {
+  background: var(--red);
+  color: white;
+  padding: 11px 17px;
+  border-radius: 5px;
+}
+
+.breadcrumb {
+  max-width: 1250px;
+  margin: 25px auto;
+  padding: 0 20px;
+  color: var(--muted);
+  font-size: 13px;
+}
+
+.breadcrumb a { color: #666; }
+
+.container {
+  max-width: 1250px;
+  margin: auto;
+  padding: 10px 20px 60px;
+}
+
+.product-layout {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 45px;
+  align-items: start;
+}
+
+.main-image {
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  background: var(--light);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.main-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  display: block;
+}
+
+.gallery {
+  display: flex;
+  gap: 10px;
+  margin-top: 12px;
+  overflow-x: auto;
+}
+
+.gallery img {
+  width: 75px;
+  height: 75px;
+  object-fit: contain;
+  background: var(--light);
+  border: 1px solid var(--border);
+  border-radius: 5px;
+  cursor: pointer;
+  flex-shrink: 0;
+}
+
+.gallery img.active { border: 2px solid var(--red); }
+
+.product-brand {
+  color: var(--red);
+  font-size: 13px;
+  font-weight: bold;
+  letter-spacing: 2px;
+  margin-bottom: 12px;
+  text-transform: uppercase;
+}
+
+.product-title {
+  font-size: 30px;
+  line-height: 1.35;
+  margin: 0 0 22px;
+  overflow-wrap: anywhere;
+}
+
+.product-summary {
+  border-top: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+  padding: 16px 0;
+  margin-bottom: 22px;
+}
+
+.info-row {
+  display: flex;
+  gap: 12px;
+  padding: 8px 0;
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+.info-label {
+  width: 125px;
+  flex-shrink: 0;
+  color: var(--muted);
+}
+
+.info-value {
+  color: #333;
+  overflow-wrap: anywhere;
+}
+
+.quote-button {
+  display: inline-block;
+  background: var(--red);
+  color: white;
+  padding: 14px 25px;
+  border-radius: 5px;
+  font-weight: bold;
+  margin-top: 10px;
+}
+
+.quote-button:hover { background: #c91620; }
+
+.section { margin-top: 45px; }
+
+.section h2 {
+  font-size: 21px;
+  border-left: 5px solid var(--red);
+  padding-left: 12px;
+  margin-bottom: 18px;
+}
+
+.description {
+  padding: 22px;
+  background: var(--light);
+  border: 1px solid var(--border);
+  border-radius: 7px;
+  line-height: 1.9;
+  font-size: 14px;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+.data-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 9px;
+}
+
+.data-tag {
+  background: #fff3f3;
+  border: 1px solid #f5dada;
+  color: #a91c23;
+  padding: 8px 12px;
+  border-radius: 4px;
+  font-size: 13px;
+  overflow-wrap: anywhere;
+}
+
+.spec-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+}
+
+.spec-table td {
+  padding: 13px;
+  border: 1px solid var(--border);
+}
+
+.spec-table td:first-child {
+  width: 35%;
+  background: var(--light);
+  color: #666;
+}
+
+.empty {
+  padding: 60px 20px;
+  text-align: center;
+  color: var(--muted);
+}
+
+footer {
+  padding: 28px 15px;
+  text-align: center;
+  background: #f7f7f7;
+  border-top: 1px solid var(--border);
+  color: var(--muted);
+  font-size: 12px;
+  line-height: 1.9;
+}
+
+@media(max-width: 750px) {
+  .site-header { padding: 14px; }
+  .logo { font-size: 16px; }
+
+  nav {
+    width: 100%;
+    justify-content: space-between;
+    gap: 7px;
+  }
+
+  nav a { font-size: 11px; }
+  .contact-link { padding: 9px 10px; }
+
+  .container { padding: 5px 13px 40px; }
+
+  .product-layout {
+    grid-template-columns: 1fr;
+    gap: 25px;
+  }
+
+  .product-title { font-size: 24px; }
+  .info-label { width: 105px; }
+  .section { margin-top: 32px; }
+  .description { padding: 15px; }
+}
 </style>
 </head>
 
 <body>
 
-<header>
-<a href=" ">GLOBAL MACHINERY PARTS SUPPLIER</a >
+<header class="site-header">
+  <a class="logo" href=" ">
+    GLOBAL <span>TURBO</span> SUPPLIER
+  </a >
+
+  <nav>
+    <a href="index.html">Home</a >
+    <a href="turbochargers.html">Brands</a >
+    <a href="all-products.html">All Products</a >
+    <a class="contact-link"
+       href="https://wa.me/8617377554610"
+       target="_blank"
+       rel="noopener">Contact Us</a >
+  </nav>
 </header>
 
-<section class="hero">
-<small>CONSTRUCTION & INDUSTRIAL EQUIPMENT</small>
-<h1 id="categoryName">Loading Category...</h1>
-<p id="categoryDescription">Loading category information...</p >
-</section>
-
-<main class="container">
-
-<a class="back" href="../machinery-parts.html">← Back to Machinery Categories</a >
-
-<h2>Available Parts</h2>
-
-<div class="search">
-<input type="search" id="searchInput" placeholder="Search part name, OEM number or model...">
-<button type="button" id="searchButton">Search</button>
+<div class="breadcrumb">
+  <a href="index.html">Home</a > /
+  <a href="all-products.html">All Products</a > /
+  <span id="crumb-name">Product Details</span>
 </div>
 
-<div id="status" class="status">Loading products...</div>
-<div id="products" class="products"></div>
-
+<main class="container" id="product-content">
+  <div class="empty">Loading product details...</div>
 </main>
 
 <footer>
-Global Machinery Parts Supplier<br>
-Construction Machinery & Industrial Equipment Spare Parts
+  <strong>GLOBAL TURBO SUPPLIER</strong><br>
+  Turbochargers & Engine Parts | Worldwide Export<br>
+  © Global Turbo Supplier. All Rights Reserved.
 </footer>
 
 <script>
-let allProducts = [];
-let currentCategory = null;
+const params = new URLSearchParams(window.location.search);
+const productName = params.get("name") || "";
+const productType = params.get("type") || "turbo";
 
-function normalize(value){
+const content = document.getElementById("product-content");
+
+const indexFiles = {
+  turbo: "/products-index.json",
+  cummins: "/cummins-products-index.json",
+  "engine-part": "/engine-parts-index.json",
+  "machinery-part": "/machinery-parts-index.json"
+};
+
+function normalizeBrand(value) {
+  if (typeof value === "object" && value !== null) {
+    value = value.name || value.value || value.path || "";
+  }
+
   return String(value || "")
-    .toLowerCase()
     .trim()
-    .replace(/[^a-z0-9\u4e00-\u9fa5]+/g,"-")
-    .replace(/^-|-$/g,"");
+    .replace(/\\/g, "/")
+    .split("/")
+    .pop()
+    .replace(/\.json$/i, "");
 }
 
-function getCategoryName(value){
-  if(typeof value === "string") return value;
+function addInfoRow(container, label, value) {
+  if (value === undefined || value === null || value === "") return;
 
-  if(value && typeof value === "object"){
-    return value.name || value.slug || value.value || "";
+  const row = document.createElement("div");
+  row.className = "info-row";
+
+  const left = document.createElement("div");
+  left.className = "info-label";
+  left.textContent = label;
+
+  const right = document.createElement("div");
+  right.className = "info-value";
+
+  right.textContent = Array.isArray(value)
+    ? value.join(", ")
+    : typeof value === "object"
+      ? JSON.stringify(value)
+      : String(value);
+
+  row.append(left, right);
+  container.appendChild(row);
+}
+
+function addTagSection(parent, title, values) {
+  if (!Array.isArray(values) || values.length === 0) return;
+
+  const section = document.createElement("section");
+  section.className = "section";
+
+  const heading = document.createElement("h2");
+  heading.textContent = title;
+
+  const list = document.createElement("div");
+  list.className = "data-list";
+
+  values.forEach(value => {
+    const tag = document.createElement("span");
+    tag.className = "data-tag";
+    tag.textContent = String(value);
+    list.appendChild(tag);
+  });
+
+  section.append(heading, list);
+  parent.appendChild(section);
+}
+
+function addDescription(parent, description) {
+  if (!description) return;
+
+  const section = document.createElement("section");
+  section.className = "section";
+
+  const heading = document.createElement("h2");
+  heading.textContent = "Product Description";
+
+  const text = document.createElement("div");
+  text.className = "description";
+
+  if (typeof description === "string") {
+    text.textContent = description;
+  } else {
+    text.textContent = JSON.stringify(description, null, 2);
   }
 
-  return "";
+  section.append(heading, text);
+  parent.appendChild(section);
 }
 
-function getProductText(item){
+function getProductImages(product) {
   return [
-    item.name,
-    item.brand,
-    item.model,
-    item.oem,
-    item.machine_model,
-    item.applications,
-    item.description,
-    item.reference_numbers,
-    getCategoryName(item.category)
-  ].flat().filter(Boolean).join(" ").toLowerCase();
-}
-
-function matchesCategory(item){
-  const productCategory = normalize(getCategoryName(item.category));
-
-  const productSlug = normalize(
-    item.category && typeof item.category === "object"
-      ? item.category.slug
-      : ""
-  );
-
-  return (
-    productCategory === normalize(currentCategory.name) ||
-    productCategory === normalize(currentCategory.slug) ||
-    productSlug === normalize(currentCategory.slug)
+    product.image,
+    ...(Array.isArray(product.images) ? product.images : [])
+  ].filter(Boolean).filter((value, index, array) =>
+    array.indexOf(value) === index
   );
 }
 
-function showError(message){
-  document.getElementById("status").textContent = message;
-  document.getElementById("products").innerHTML = "";
+function renderProduct(product, type) {
+  document.title =
+    (product.name || "Product") + " | Global Turbo Supplier";
 
-  const empty = document.createElement("div");
-  empty.className = "empty";
-  empty.textContent = message;
+  document.getElementById("crumb-name").textContent =
+    product.name || "Product Details";
 
-  document.getElementById("products").appendChild(empty);
-}
+  content.innerHTML = "";
 
-async function loadPage(){
-  const params = new URLSearchParams(window.location.search);
-  const slug = params.get("slug");
+  const layout = document.createElement("div");
+  layout.className = "product-layout";
 
-  if(!slug){
-    showError("Category not specified. Please return to the machinery categories page.");
-    return;
+  /* PRODUCT IMAGES */
+
+  const imageColumn = document.createElement("div");
+  const mainImage = document.createElement("div");
+  mainImage.className = "main-image";
+
+  const img = document.createElement("img");
+  img.alt = product.name || "Product";
+
+  const allImages = getProductImages(product);
+
+  if (allImages.length > 0) {
+    img.src = allImages[0];
+  } else {
+    img.alt = "No product image available";
   }
 
-  try{
-    const [categoryResponse,productResponse] = await Promise.all([
-      fetch("../../machinery-categories-index.json?v=" + Date.now()),
-      fetch("../../machinery-parts-index.json?v=" + Date.now())
-    ]);
+  mainImage.appendChild(img);
+  imageColumn.appendChild(mainImage);
 
-    if(!categoryResponse.ok) throw new Error("Category index could not be loaded.");
-    if(!productResponse.ok) throw new Error("Product index could not be loaded.");
+  const gallery = document.createElement("div");
+  gallery.className = "gallery";
 
-    const categoryData = await categoryResponse.json();
-    const productData = await productResponse.json();
+  allImages.forEach((src, index) => {
+    const thumb = document.createElement("img");
+    thumb.src = src;
+    thumb.alt = product.name || "Product";
+    thumb.loading = "lazy";
 
-    const categories = Array.isArray(categoryData)
-      ? categoryData
-      : (categoryData.categories || []);
+    if (index === 0) thumb.classList.add("active");
 
-    allProducts = Array.isArray(productData)
-      ? productData
-      : (productData.products || []);
+    thumb.addEventListener("click", () => {
+      img.src = src;
 
-    currentCategory = categories.find(category =>
-      normalize(category.slug || category.name) === normalize(slug)
-    );
+      gallery.querySelectorAll("img").forEach(item =>
+        item.classList.remove("active")
+      );
 
-    if(!currentCategory){
-      document.getElementById("categoryName").textContent = "Category Not Found";
-      document.getElementById("categoryDescription").textContent =
-        "This category may have been removed or its address may be incorrect.";
-
-      showError("The requested category was not found.");
-      return;
-    }
-
-    document.title = currentCategory.name + " | Machinery Parts";
-
-    document.getElementById("categoryName").textContent =
-      currentCategory.name;
-
-    document.getElementById("categoryDescription").textContent =
-      currentCategory.description || "Browse available parts in this category.";
-
-    renderProducts();
-
-  }catch(error){
-    console.error(error);
-    showError("Unable to load category or product data. Please try again later.");
-  }
-}
-
-function renderProducts(){
-  const keyword = document.getElementById("searchInput").value
-    .trim().toLowerCase();
-
-  const container = document.getElementById("products");
-  const status = document.getElementById("status");
-
-  const filtered = allProducts.filter(item =>
-    matchesCategory(item) && getProductText(item).includes(keyword)
-  );
-
-  container.innerHTML = "";
-
-  if(filtered.length === 0){
-    status.textContent = "No matching products found.";
-
-    const empty = document.createElement("div");
-    empty.className = "empty";
-    empty.textContent = "No products have been added to this category yet.";
-
-    container.appendChild(empty);
-    return;
-  }
-
-  status.textContent = "Showing " + filtered.length + " products.";
-
-  filtered.forEach(item => {
-    const card = document.createElement("article");
-    card.className = "product";
-
-    const image = item.image || (
-      Array.isArray(item.images) ? item.images[0] : ""
-    );
-
-    const name = item.name || item.model || "Machinery Part";
-
-    const imageBox = document.createElement("div");
-    imageBox.className = "product-image";
-
-    if(image){
-      const img = document.createElement("img");
-      img.src = image;
-      img.alt = name;
-
-      img.onerror = () => {
-        imageBox.innerHTML = '<span class="no-image">Image unavailable</span>';
-      };
-
-      imageBox.appendChild(img);
-    }else{
-      imageBox.innerHTML = '<span class="no-image">Product Image</span>';
-    }
-
-    const info = document.createElement("div");
-    info.className = "product-info";
-
-    const title = document.createElement("h3");
-    title.textContent = name;
-    info.appendChild(title);
-
-    [
-      ["Brand",item.brand],
-      ["OEM Number",item.oem],
-      ["Machine Model",item.machine_model || item.model],
-      ["Applications",item.applications]
-    ].forEach(([label,value]) => {
-      if(value){
-        const p = document.createElement("p");
-        p.textContent = label + ": " +
-          (Array.isArray(value) ? value.join(", ") : value);
-        info.appendChild(p);
-      }
+      thumb.classList.add("active");
     });
 
-    const link = document.createElement("a");
-    link.className = "details";
-
-    link.href = "../../product-details.html?type=machinery-part&name=" +
-      encodeURIComponent(name);
-
-    link.textContent = "View Details →";
-
-    info.appendChild(link);
-    card.appendChild(imageBox);
-    card.appendChild(info);
-    container.appendChild(card);
+    gallery.appendChild(thumb);
   });
+
+  if (allImages.length > 1) {
+    imageColumn.appendChild(gallery);
+  }
+
+  /* PRODUCT INFORMATION */
+
+  const infoColumn = document.createElement("div");
+
+  const brandName = type === "cummins"
+    ? "Cummins"
+    : normalizeBrand(product.brand);
+
+  const brand = document.createElement("div");
+  brand.className = "product-brand";
+  brand.textContent = brandName || "Global Turbo Supplier";
+
+  const title = document.createElement("h1");
+  title.className = "product-title";
+  title.textContent =
+    product.name || product.model || "Product Details";
+
+  const summary = document.createElement("div");
+  summary.className = "product-summary";
+
+  addInfoRow(summary, "Brand", brandName);
+  addInfoRow(summary, "Model", product.model);
+  addInfoRow(summary, "Engine Series", product.series);
+  addInfoRow(summary, "Engine Power", product.power);
+  addInfoRow(summary, "Machinery Model", product.machine_model);
+  addInfoRow(summary, "OEM Number", product.oem);
+  addInfoRow(summary, "Origin", product.origin);
+  addInfoRow(summary, "Condition", product.condition);
+  addInfoRow(summary, "Warranty", product.warranty);
+
+  const quote = document.createElement("a");
+  quote.className = "quote-button";
+
+  const whatsapp = String(
+    product.whatsapp || "8617377554610"
+  ).replace(/\D/g, "");
+
+  quote.href = "https://wa.me/" + whatsapp +
+    "?text=" + encodeURIComponent(
+      "I am interested in " + (product.name || "this product")
+    );
+
+  quote.target = "_blank";
+  quote.rel = "noopener";
+  quote.textContent = "Request a Quote";
+
+  infoColumn.append(brand, title, summary, quote);
+
+  layout.append(imageColumn, infoColumn);
+  content.appendChild(layout);
+
+  /* PRODUCT DETAILS */
+
+  addTagSection(content, "OEM Numbers", product.oem_numbers);
+  addTagSection(content, "Reference Numbers", product.reference_numbers);
+  addTagSection(content, "Interchange Numbers", product.interchange_numbers);
+  addTagSection(content, "Engine Models", product.engine_models);
+  addTagSection(content, "Applications", product.applications);
+
+  /* TECHNICAL SPECIFICATIONS */
+
+  if (Array.isArray(product.technical_specs) &&
+      product.technical_specs.length > 0) {
+
+    const section = document.createElement("section");
+    section.className = "section";
+
+    const heading = document.createElement("h2");
+    heading.textContent = "Technical Specifications";
+
+    const table = document.createElement("table");
+    table.className = "spec-table";
+
+    product.technical_specs.forEach(spec => {
+      const row = document.createElement("tr");
+
+      const parameter = document.createElement("td");
+      parameter.textContent = spec.parameter || "";
+
+      const value = document.createElement("td");
+      value.textContent = spec.value || "";
+
+      row.append(parameter, value);
+      table.appendChild(row);
+    });
+
+    section.append(heading, table);
+    content.appendChild(section);
+  }
+
+  addDescription(content, product.description);
 }
 
-document.getElementById("searchButton").addEventListener("click",renderProducts);
-document.getElementById("searchInput").addEventListener("input",renderProducts);
+/* LOAD THE CORRECT PRODUCT INDEX */
 
-loadPage();
+async function loadProduct() {
+  if (!indexFiles[productType]) {
+    throw new Error("Unknown product type: " + productType);
+  }
+
+  const response = await fetch(indexFiles[productType]);
+
+  if (!response.ok) {
+    throw new Error("Product index not found: " + indexFiles[productType]);
+  }
+
+  const products = await response.json();
+
+  if (!Array.isArray(products)) {
+    throw new Error("Invalid product index format");
+  }
+
+  const product = products.find(item =>
+    String(item.name || "").trim() === productName.trim()
+  );
+
+  if (!product) {
+    content.innerHTML =
+      '<div class="empty">Product not found. Please return to the product list.</div>';
+    return;
+  }
+
+  renderProduct(product, productType);
+}
+
+loadProduct().catch(error => {
+  console.error("Product detail error:", error);
+
+  content.innerHTML =
+    '<div class="empty">Unable to load product details. Please try again later.</div>';
+});
 </script>
 
 </body>
