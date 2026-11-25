@@ -6,7 +6,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <title>Construction Machinery Parts | Global Machinery Parts Supplier</title>
-<meta name="description" content="Construction machinery spare parts supplier. Excavator, wheel loader, bulldozer, motor grader, road roller and crane parts. Search by OEM number and equipment model.">
+<meta name="description" content="Global construction machinery spare parts supplier. Browse excavator, loader, bulldozer and other machinery parts.">
 
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
@@ -307,9 +307,8 @@ footer{
   <small>CONSTRUCTION & INDUSTRIAL EQUIPMENT</small>
   <h1>Construction Machinery Parts</h1>
   <p>
-    Find spare parts for excavators, wheel loaders, bulldozers,
-    motor graders, road rollers and cranes.
-    Search by product name, OEM number or equipment model.
+    Find spare parts for construction and industrial machinery.
+    Browse categories or search by product name, OEM number or equipment model.
   </p >
 </section>
 
@@ -318,79 +317,12 @@ footer{
   <h2 class="section-title">Browse Machinery Categories</h2>
 
   <p class="section-description">
-    Select an equipment category to browse related machinery spare parts.
+    Categories are automatically loaded from our product management system.
   </p >
 
-  
-<div class="categories">
-
-  <a class="category-card" href="category-image">
-    <div class="category-image">
-      < img src="https://images.unsplash.com/photo-1580901368919-7738efb0f87e?auto=format&fit=crop&w=700&q=80" alt="Excavator">
-    </div>
-    <div class="category-info">
-      <h3>Excavator Parts</h3>
-      <p>Hydraulic, engine, undercarriage and excavator components.</p >
-      <span>Browse Parts →</span>
-    </div>
-  </a >
-
-  <a class="category-card" href="categories/wheel-loader-parts.html">
-    <div class="category-image">
-      < img src="https://images.unsplash.com/photo-1578662996442-48f60103fc96?auto=format&fit=crop&w=700&q=80" alt="Wheel Loader">
-    </div>
-    <div class="category-info">
-      <h3>Wheel Loader Parts</h3>
-      <p>Loader engine, transmission, hydraulic and chassis parts.</p >
-      <span>Browse Parts →</span>
-    </div>
-  </a >
-
-  <a class="category-card" href="categories/bulldozer-parts.html">
-    <div class="category-image">
-      < img src="https://images.unsplash.com/photo-1504307651254-35680f356dfd?auto=format&fit=crop&w=700&q=80" alt="Bulldozer">
-    </div>
-    <div class="category-info">
-      <h3>Bulldozer Parts</h3>
-      <p>Track systems, engine components and bulldozer spare parts.</p >
-      <span>Browse Parts →</span>
-    </div>
-  </a >
-
-  <a class="category-card" href="categories/motor-grader-parts.html">
-    <div class="category-image">
-      < img src="https://images.unsplash.com/photo-1519003722824-194d4455a60c?auto=format&fit=crop&w=700&q=80" alt="Motor Grader">
-    </div>
-    <div class="category-info">
-      <h3>Motor Grader Parts</h3>
-      <p>Grader transmission, hydraulic and working components.</p >
-      <span>Browse Parts →</span>
-    </div>
-  </a >
-
-  <a class="category-card" href="categories/road-roller-parts.html">
-    <div class="category-image">
-      < img src="https://images.unsplash.com/photo-1519003722824-194d4455a60c?auto=format&fit=crop&w=700&q=80" alt="Road Roller">
-    </div>
-    <div class="category-info">
-      <h3>Road Roller Parts</h3>
-      <p>Compaction equipment engine, vibration and drive parts.</p >
-      <span>Browse Parts →</span>
-    </div>
-  </a >
-
-  <a class="category-card" href="categories/crane-parts.html">
-    <div class="category-image">
-      < img src="https://images.unsplash.com/photo-1541888946425-d81bb19240f5?auto=format&fit=crop&w=700&q=80" alt="Crane">
-    </div>
-    <div class="category-info">
-      <h3>Crane Parts</h3>
-      <p>Crane engine, hydraulic, lifting and control components.</p >
-      <span>Browse Parts →</span>
-    </div>
-  </a >
-
-</div>
+  <div class="categories" id="categories">
+    <div class="empty">Loading machinery categories...</div>
+  </div>
 
   <h2 class="section-title">Machinery Parts Catalog</h2>
 
@@ -408,14 +340,10 @@ footer{
     <button type="button" id="searchButton">Search</button>
   </div>
 
-  <div class="filter-row">
-    <button class="filter-btn active" data-category="all">All Machinery Parts</button>
-    <button class="filter-btn" data-category="excavator">Excavator</button>
-    <button class="filter-btn" data-category="loader">Wheel Loader</button>
-    <button class="filter-btn" data-category="bulldozer">Bulldozer</button>
-    <button class="filter-btn" data-category="grader">Motor Grader</button>
-    <button class="filter-btn" data-category="roller">Road Roller</button>
-    <button class="filter-btn" data-category="crane">Crane</button>
+  <div class="filter-row" id="filters">
+    <button class="filter-btn active" data-category="all">
+      All Machinery Parts
+    </button>
   </div>
 
   <div id="status" class="status">Loading machinery parts...</div>
@@ -431,16 +359,30 @@ footer{
 
 <script>
 let allProducts = [];
+let allCategories = [];
 let selectedCategory = "all";
 
-const categoryWords = {
-  excavator: ["excavator","挖掘机"],
-  loader: ["loader","wheel loader","装载机"],
-  bulldozer: ["bulldozer","dozer","推土机"],
-  grader: ["grader","motor grader","平地机"],
-  roller: ["roller","road roller","compactor","压路机"],
-  crane: ["crane","起重机"]
-};
+function normalize(value){
+  return String(value || "")
+    .toLowerCase()
+    .trim()
+    .replace(/[^a-z0-9\u4e00-\u9fa5]+/g,"-")
+    .replace(/^-|-$/g,"");
+}
+
+function getCategoryName(category){
+  if(typeof category === "string") return category;
+
+  if(category && typeof category === "object"){
+    return category.name || category.slug || category.value || "";
+  }
+
+  return "";
+}
+
+function getCategorySlug(category){
+  return category.slug || normalize(category.name);
+}
 
 function getProductText(item){
   return [
@@ -452,29 +394,174 @@ function getProductText(item){
     item.applications,
     item.description,
     item.reference_numbers,
-    item.category,
-    item.equipment_type,
-    item.machine_type
+    getCategoryName(item.category)
   ].flat().filter(Boolean).join(" ").toLowerCase();
 }
 
-function matchesCategory(item, category){
+function productMatchesCategory(item, category){
   if(category === "all") return true;
 
-  const text = getProductText(item);
-  return categoryWords[category].some(word =>
-    text.includes(word)
+  const productCategory = normalize(getCategoryName(item.category));
+  const productCategorySlug = normalize(
+    item.category && typeof item.category === "object"
+      ? item.category.slug
+      : ""
   );
+
+  return (
+    productCategory === normalize(category.name) ||
+    productCategory === normalize(category.slug) ||
+    productCategorySlug === normalize(category.slug)
+  );
+}
+
+async function loadCategories(){
+  const container = document.getElementById("categories");
+
+  try{
+    const response = await fetch(
+      "../machinery-categories-index.json?v=" + Date.now()
+    );
+
+    if(!response.ok){
+      throw new Error("Category index not found");
+    }
+
+    const data = await response.json();
+
+    allCategories = Array.isArray(data)
+      ? data
+      : (Array.isArray(data.categories) ? data.categories : []);
+
+    renderCategories();
+
+  }catch(error){
+    container.innerHTML =
+      '<div class="empty">Unable to load machinery categories. Please check the category index.</div>';
+
+    console.error("Category loading error:",error);
+  }
+}
+
+function renderCategories(){
+  const container = document.getElementById("categories");
+  const filters = document.getElementById("filters");
+
+  container.innerHTML = "";
+  filters.innerHTML = "";
+
+  const allButton = document.createElement("button");
+  allButton.className = "filter-btn active";
+  allButton.dataset.category = "all";
+  allButton.textContent = "All Machinery Parts";
+  allButton.addEventListener("click",() => selectCategory("all"));
+  filters.appendChild(allButton);
+
+  if(allCategories.length === 0){
+    container.innerHTML =
+      '<div class="empty">No machinery categories have been added yet.</div>';
+    return;
+  }
+
+  allCategories.forEach(category => {
+    const name = category.name || "Machinery Category";
+    const slug = getCategorySlug(category);
+    const description = category.description || "Browse related machinery spare parts.";
+    const image = category.image || "";
+
+    const card = document.createElement("button");
+    card.type = "button";
+    card.className = "category-card";
+    card.dataset.category = slug;
+
+    const imageBox = document.createElement("div");
+    imageBox.className = "category-image";
+
+    if(image){
+      const img = document.createElement("img");
+      img.src = image;
+      img.alt = name;
+      img.onerror = function(){
+        imageBox.innerHTML = '<span class="no-image">Image unavailable</span>';
+      };
+      imageBox.appendChild(img);
+    }
+
+    const info = document.createElement("div");
+    info.className = "category-info";
+
+    const title = document.createElement("h3");
+    title.textContent = name;
+
+    const desc = document.createElement("p");
+    desc.textContent = description;
+
+    const browse = document.createElement("span");
+    browse.textContent = "Browse Parts →";
+
+    info.appendChild(title);
+    info.appendChild(desc);
+    info.appendChild(browse);
+
+    card.appendChild(imageBox);
+    card.appendChild(info);
+
+    card.addEventListener("click",() => selectCategory(category));
+
+    container.appendChild(card);
+
+    const filter = document.createElement("button");
+    filter.className = "filter-btn";
+    filter.dataset.category = slug;
+    filter.textContent = name;
+    filter.addEventListener("click",() => selectCategory(category));
+
+    filters.appendChild(filter);
+  });
+}
+
+function selectCategory(category){
+  if(category === "all"){
+    selectedCategory = "all";
+  }else{
+    selectedCategory = category;
+  }
+
+  document.querySelectorAll(".category-card").forEach(card => {
+    card.classList.toggle(
+      "active",
+      selectedCategory !== "all" &&
+      card.dataset.category === getCategorySlug(selectedCategory)
+    );
+  });
+
+  document.querySelectorAll(".filter-btn").forEach(button => {
+    button.classList.toggle(
+      "active",
+      selectedCategory === "all"
+        ? button.dataset.category === "all"
+        : button.dataset.category === getCategorySlug(selectedCategory)
+    );
+  });
+
+  renderProducts();
+
+  document.getElementById("products").scrollIntoView({
+    behavior:"smooth",
+    block:"start"
+  });
 }
 
 async function loadProducts(){
   const status = document.getElementById("status");
 
   try{
-    const response = await fetch("../machinery-parts-index.json");
+    const response = await fetch(
+      "../machinery-parts-index.json?v=" + Date.now()
+    );
 
     if(!response.ok){
-      throw new Error("Product index could not be loaded.");
+      throw new Error("Product index could not be loaded");
     }
 
     const data = await response.json();
@@ -488,7 +575,8 @@ async function loadProducts(){
   }catch(error){
     status.textContent =
       "Unable to load machinery products. Please check the product index.";
-    console.error(error);
+
+    console.error("Product loading error:",error);
   }
 }
 
@@ -501,8 +589,11 @@ function renderProducts(){
   const status = document.getElementById("status");
 
   const filtered = allProducts.filter(item => {
-    return matchesCategory(item, selectedCategory) &&
-      getProductText(item).includes(keyword);
+    const categoryMatch =
+      selectedCategory === "all" ||
+      productMatchesCategory(item,selectedCategory);
+
+    return categoryMatch && getProductText(item).includes(keyword);
   });
 
   container.innerHTML = "";
@@ -515,7 +606,7 @@ function renderProducts(){
     const empty = document.createElement("div");
     empty.className = "empty";
     empty.textContent =
-      "No products are currently available in this category. Please check back later or contact us for assistance.";
+      "No products are currently available in this category. Please check back later or contact us.";
 
     container.appendChild(empty);
     return;
@@ -533,7 +624,6 @@ function renderProducts(){
     );
 
     const name = item.name || item.model || "Machinery Part";
-
     const productId = item.id || item.slug || item.name || "";
 
     const link = "../product-details.html?type=machinery-part&id=" +
@@ -547,7 +637,8 @@ function renderProducts(){
       img.src = image;
       img.alt = name;
       img.onerror = function(){
-        imageBox.innerHTML = '<span class="no-image">Image unavailable</span>';
+        imageBox.innerHTML =
+          '<span class="no-image">Image unavailable</span>';
       };
       imageBox.appendChild(img);
     }else{
@@ -563,13 +654,13 @@ function renderProducts(){
     info.appendChild(title);
 
     const fields = [
-      ["Brand", item.brand],
-      ["OEM Number", item.oem],
-      ["Machine Model", item.machine_model || item.model],
-      ["Applications", item.applications]
+      ["Brand",item.brand],
+      ["OEM Number",item.oem],
+      ["Machine Model",item.machine_model || item.model],
+      ["Applications",item.applications]
     ];
 
-    fields.forEach(([label, value]) => {
+    fields.forEach(([label,value]) => {
       if(value){
         const p = document.createElement("p");
         p.textContent = label + ": " +
@@ -587,59 +678,27 @@ function renderProducts(){
 
     card.appendChild(imageBox);
     card.appendChild(info);
-
     container.appendChild(card);
   });
 }
 
-function selectCategory(category){
-  selectedCategory = category;
-
-  document.querySelectorAll(".category-card").forEach(button => {
-    button.classList.toggle(
-      "active",
-      button.dataset.category === category
-    );
-  });
-
-  document.querySelectorAll(".filter-btn").forEach(button => {
-    button.classList.toggle(
-      "active",
-      button.dataset.category === category
-    );
-  });
-
-  renderProducts();
-
-  document.getElementById("products").scrollIntoView({
-    behavior:"smooth",
-    block:"start"
-  });
-}
-
-document.querySelectorAll(".category-card").forEach(button => {
-  button.addEventListener("click", () => {
-    selectCategory(button.dataset.category);
-  });
-});
-
-document.querySelectorAll(".filter-btn").forEach(button => {
-  button.addEventListener("click", () => {
-    selectCategory(button.dataset.category);
-  });
-});
-
 document.getElementById("searchButton").addEventListener(
-  "click", renderProducts
+  "click",renderProducts
 );
 
 document.getElementById("searchInput").addEventListener(
-  "input", renderProducts
+  "input",renderProducts
 );
 
-loadProducts();
+async function init(){
+  await Promise.all([
+    loadCategories(),
+    loadProducts()
+  ]);
+}
+
+init();
 </script>
 
 </body>
 </html>
-
