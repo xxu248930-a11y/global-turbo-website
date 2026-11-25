@@ -34,7 +34,12 @@ header a{color:white;text-decoration:none;font-weight:bold}
 .empty{grid-column:1/-1;text-align:center;background:#f4f6f8;padding:40px 15px;border-radius:8px;color:#697586;line-height:1.8}
 footer{background:#202630;color:#ddd;text-align:center;padding:28px 6%;font-size:13px;line-height:1.8}
 @media(max-width:850px){.products{grid-template-columns:repeat(2,1fr)}}
-@media(max-width:550px){.products{grid-template-columns:1fr}.hero h1{font-size:28px}.search{flex-direction:column}.search button{padding:13px}}
+@media(max-width:550px){
+  .products{grid-template-columns:1fr}
+  .hero h1{font-size:28px}
+  .search{flex-direction:column}
+  .search button{padding:13px}
+}
 </style>
 </head>
 
@@ -83,12 +88,28 @@ function normalize(value){
     .replace(/^-|-$/g,"");
 }
 
-function getCategoryName(value){
-  if(typeof value === "string") return value;
-  if(value && typeof value === "object"){
-    return value.name || value.slug || value.value || "";
+function getCategoryValues(value){
+  if(!value) return [];
+
+  if(Array.isArray(value)){
+    return value.flatMap(item => getCategoryValues(item));
   }
-  return "";
+
+  if(typeof value === "string" || typeof value === "number"){
+    return [String(value)];
+  }
+
+  if(typeof value === "object"){
+    return [
+      value.name,
+      value.slug,
+      value.value,
+      value.label,
+      value.id
+    ].filter(Boolean).map(String);
+  }
+
+  return [];
 }
 
 function getProductText(item){
@@ -101,21 +122,27 @@ function getProductText(item){
     item.applications,
     item.description,
     item.reference_numbers,
-    getCategoryName(item.category)
+    ...getCategoryValues(item.category)
   ].flat().filter(Boolean).join(" ").toLowerCase();
 }
 
 function matchesCategory(item){
-  const productCategory = normalize(getCategoryName(item.category));
-  const productSlug = normalize(
-    item.category && typeof item.category === "object"
-      ? item.category.slug
-      : ""
-  );
+  if(!currentCategory) return false;
 
-  return productCategory === normalize(currentCategory.name) ||
-         productCategory === normalize(currentCategory.slug) ||
-         productSlug === normalize(currentCategory.slug);
+  const targetValues = [
+    currentCategory.name,
+    currentCategory.slug
+  ].filter(Boolean).map(normalize);
+
+  const productValues = [
+    ...getCategoryValues(item.category),
+    item.category_slug,
+    item.category_name
+  ].filter(Boolean).map(normalize);
+
+  return productValues.some(value =>
+    targetValues.includes(value)
+  );
 }
 
 function showError(message){
@@ -139,8 +166,13 @@ async function loadPage(){
       fetch("../../machinery-parts-index.json?v=" + Date.now())
     ]);
 
-    if(!categoryResponse.ok) throw new Error("Category index could not be loaded.");
-    if(!productResponse.ok) throw new Error("Product index could not be loaded.");
+    if(!categoryResponse.ok){
+      throw new Error("Category index could not be loaded.");
+    }
+
+    if(!productResponse.ok){
+      throw new Error("Product index could not be loaded.");
+    }
 
     const categoryData = await categoryResponse.json();
     const productData = await productResponse.json();
@@ -154,13 +186,17 @@ async function loadPage(){
       : (productData.products || []);
 
     currentCategory = categories.find(category =>
-      normalize(category.slug || category.name) === normalize(slug)
+      normalize(category.slug) === normalize(slug) ||
+      normalize(category.name) === normalize(slug)
     );
 
     if(!currentCategory){
-      document.getElementById("categoryName").textContent = "Category Not Found";
+      document.getElementById("categoryName").textContent =
+        "Category Not Found";
+
       document.getElementById("categoryDescription").textContent =
         "This category may have been removed or its address may be incorrect.";
+
       showError("The requested category was not found.");
       return;
     }
@@ -168,10 +204,11 @@ async function loadPage(){
     document.title = currentCategory.name + " | Machinery Parts";
 
     document.getElementById("categoryName").textContent =
-      currentCategory.name;
+      currentCategory.name || "Machinery Parts";
 
     document.getElementById("categoryDescription").textContent =
-      currentCategory.description || "Browse available parts in this category.";
+      currentCategory.description ||
+      "Browse available parts in this category.";
 
     renderProducts();
 
@@ -182,6 +219,8 @@ async function loadPage(){
 }
 
 function renderProducts(){
+  if(!currentCategory) return;
+
   const keyword = document.getElementById("searchInput").value
     .trim().toLowerCase();
 
@@ -189,15 +228,18 @@ function renderProducts(){
   const status = document.getElementById("status");
 
   const filtered = allProducts.filter(item =>
-    matchesCategory(item) && getProductText(item).includes(keyword)
+    matchesCategory(item) &&
+    getProductText(item).includes(keyword)
   );
 
   container.innerHTML = "";
 
   if(filtered.length === 0){
     status.textContent = "No matching products found.";
+
     container.innerHTML =
       '<div class="empty">No products have been added to this category yet.</div>';
+
     return;
   }
 
@@ -212,7 +254,6 @@ function renderProducts(){
     );
 
     const name = item.name || item.model || "Machinery Part";
-    const id = item.id || item.slug || item.name || "";
 
     const imageBox = document.createElement("div");
     imageBox.className = "product-image";
@@ -221,12 +262,16 @@ function renderProducts(){
       const img = document.createElement("img");
       img.src = image;
       img.alt = name;
+
       img.onerror = () => {
-        imageBox.innerHTML = '<span class="no-image">Image unavailable</span>';
+        imageBox.innerHTML =
+          '<span class="no-image">Image unavailable</span>';
       };
+
       imageBox.appendChild(img);
     }else{
-      imageBox.innerHTML = '<span class="no-image">Product Image</span>';
+      imageBox.innerHTML =
+        '<span class="no-image">Product Image</span>';
     }
 
     const info = document.createElement("div");
@@ -244,16 +289,21 @@ function renderProducts(){
     ].forEach(([label,value]) => {
       if(value){
         const p = document.createElement("p");
+
         p.textContent = label + ": " +
           (Array.isArray(value) ? value.join(", ") : value);
+
         info.appendChild(p);
       }
     });
 
     const link = document.createElement("a");
     link.className = "details";
-    link.href = "../../product-details.html?type=machinery-part&id=" +
-      encodeURIComponent(id);
+
+    link.href =
+      "../../product-details.html?type=machinery-part&name=" +
+      encodeURIComponent(item.name || "");
+
     link.textContent = "View Details →";
 
     info.appendChild(link);
@@ -263,12 +313,14 @@ function renderProducts(){
   });
 }
 
-document.getElementById("searchButton").addEventListener("click",renderProducts);
-document.getElementById("searchInput").addEventListener("input",renderProducts);
+document.getElementById("searchButton")
+  .addEventListener("click",renderProducts);
+
+document.getElementById("searchInput")
+  .addEventListener("input",renderProducts);
 
 loadPage();
 </script>
 
 </body>
 </html>
-
