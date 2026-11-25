@@ -506,10 +506,16 @@ function renderCategories(){
     card.appendChild(imageBox);
     card.appendChild(info);
 
-    card.addEventListener("click",() => selectCategory(category));
+    // 修复一：点击类别卡片，进入独立类别搜索页面
+    card.addEventListener("click",() => {
+      window.location.href =
+        "categories/category.html?slug=" +
+        encodeURIComponent(slug);
+    });
 
     container.appendChild(card);
 
+    // 分类筛选按钮仍然保留当前页面筛选功能
     const filter = document.createElement("button");
     filter.className = "filter-btn";
     filter.dataset.category = slug;
@@ -624,10 +630,6 @@ function renderProducts(){
     );
 
     const name = item.name || item.model || "Machinery Part";
-    const productId = item.id || item.slug || item.name || "";
-
-    const link = "../product-details.html?type=machinery-part&id=" +
-      encodeURIComponent(productId);
 
     const imageBox = document.createElement("div");
     imageBox.className = "product-image";
@@ -669,9 +671,12 @@ function renderProducts(){
       }
     });
 
+    // 修复二：详情页使用 name 参数，与现有 product-details.html 匹配
     const linkElement = document.createElement("a");
     linkElement.className = "details-btn";
-    linkElement.href = link;
+    linkElement.href =
+      "../product-details.html?type=machinery-part&name=" +
+      encodeURIComponent(item.name || "");
     linkElement.textContent = "View Details →";
 
     info.appendChild(linkElement);
