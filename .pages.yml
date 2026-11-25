@@ -217,6 +217,7 @@ content:
         type: string
         
 
+  
   # 6. 工程机械类别管理（独立上传入口）
   - name: machinery_categories
     label: Machinery Categories（工程机械类别管理）
@@ -224,24 +225,30 @@ content:
     path: machinery-categories
     filename: "{fields.slug}.json"
     format: json
+    view:
+      primary: name
+      fields: [name, slug]
     fields:
       - name: name
         label: Category Name
         type: string
         required: true
+
       - name: slug
         label: Category Slug
         type: string
         required: true
+
       - name: description
         label: Category Description
         type: text
+
       - name: image
         label: Category Image
         type: image
 
 
-# 6. Machinery Parts Product Management
+  # 7. Machinery Parts Product Management
   - name: machinery_parts
     label: Machinery Parts（工程机械配件上传）
     type: collection
@@ -264,6 +271,9 @@ content:
         required: true
         options:
           collection: machinery_categories
+          search: "name,slug"
+          value: "{fields.slug}"
+          label: "{fields.name}"
 
       - name: machine_model
         label: Machinery Model
@@ -303,7 +313,8 @@ content:
         type: string
 
 
-  # 7. 首页精选产品管理
+
+  # 8. 首页精选产品管理
   - name: featured_products
     label: Featured Products（首页精选产品）
     type: file
