@@ -85,6 +85,7 @@ header a{
 }
 
 .category-card{
+  display:block;
   border:1px solid #e4e7ec;
   border-radius:9px;
   overflow:hidden;
@@ -93,12 +94,10 @@ header a{
   transition:.2s;
   text-align:left;
   color:var(--dark);
-  padding:0;
-  width:100%;
+  text-decoration:none;
 }
 
-.category-card:hover,
-.category-card.active{
+.category-card:hover{
   border-color:var(--red);
   box-shadow:0 5px 20px rgba(0,0,0,.08);
   transform:translateY(-3px);
@@ -108,6 +107,9 @@ header a{
   height:155px;
   background:#eef0f3;
   overflow:hidden;
+  display:flex;
+  align-items:center;
+  justify-content:center;
 }
 
 .category-image img{
@@ -362,6 +364,9 @@ let allProducts = [];
 let allCategories = [];
 let selectedCategory = "all";
 
+const CATEGORY_PAGE =
+  "/machinery-parts/categories/category.html";
+
 function normalize(value){
   return String(value || "")
     .toLowerCase()
@@ -374,14 +379,41 @@ function getCategoryName(category){
   if(typeof category === "string") return category;
 
   if(category && typeof category === "object"){
-    return category.name || category.slug || category.value || "";
+    return category.name ||
+           category.slug ||
+           category.value ||
+           category.label ||
+           "";
   }
 
   return "";
 }
 
 function getCategorySlug(category){
-  return category.slug || normalize(category.name);
+  return String(category.slug || normalize(category.name));
+}
+
+function getCategoryValues(value){
+  if(!value) return [];
+
+  if(Array.isArray(value)){
+    return value.flatMap(getCategoryValues);
+  }
+
+  if(typeof value === "string" || typeof value === "number"){
+    return [String(value)];
+  }
+
+  if(typeof value === "object"){
+    return [
+      value.name,
+      value.slug,
+      value.value,
+      value.label
+    ].filter(Boolean).map(String);
+  }
+
+  return [];
 }
 
 function getProductText(item){
@@ -394,25 +426,25 @@ function getProductText(item){
     item.applications,
     item.description,
     item.reference_numbers,
-    getCategoryName(item.category)
+    ...getCategoryValues(item.category)
   ].flat().filter(Boolean).join(" ").toLowerCase();
 }
 
-function productMatchesCategory(item, category){
+function productMatchesCategory(item,category){
   if(category === "all") return true;
 
-  const productCategory = normalize(getCategoryName(item.category));
-  const productCategorySlug = normalize(
-    item.category && typeof item.category === "object"
-      ? item.category.slug
-      : ""
-  );
+  const target = [
+    category.name,
+    category.slug
+  ].filter(Boolean).map(normalize);
 
-  return (
-    productCategory === normalize(category.name) ||
-    productCategory === normalize(category.slug) ||
-    productCategorySlug === normalize(category.slug)
-  );
+  const productValues = [
+    ...getCategoryValues(item.category),
+    item.category_slug,
+    item.category_name
+  ].filter(Boolean).map(normalize);
+
+  return productValues.some(value => target.includes(value));
 }
 
 async function loadCategories(){
@@ -420,7 +452,7 @@ async function loadCategories(){
 
   try{
     const response = await fetch(
-      "../machinery-categories-index.json?v=" + Date.now()
+      "/machinery-categories-index.json?v=" + Date.now()
     );
 
     if(!response.ok){
@@ -454,6 +486,7 @@ function renderCategories(){
   allButton.className = "filter-btn active";
   allButton.dataset.category = "all";
   allButton.textContent = "All Machinery Parts";
+
   allButton.addEventListener("click",() => selectCategory("all"));
   filters.appendChild(allButton);
 
@@ -466,13 +499,14 @@ function renderCategories(){
   allCategories.forEach(category => {
     const name = category.name || "Machinery Category";
     const slug = getCategorySlug(category);
-    const description = category.description || "Browse related machinery spare parts.";
+    const description = category.description ||
+      "Browse related machinery spare parts.";
     const image = category.image || "";
 
-    const card = document.createElement("button");
-    card.type = "button";
+    // 使用链接卡片，统一跳转动态分类页面
+    const card = document.createElement("a");
     card.className = "category-card";
-    card.dataset.category = slug;
+    card.href = CATEGORY_PAGE + "?slug=" + encodeURIComponent(slug);
 
     const imageBox = document.createElement("div");
     imageBox.className = "category-image";
@@ -481,10 +515,16 @@ function renderCategories(){
       const img = document.createElement("img");
       img.src = image;
       img.alt = name;
+
       img.onerror = function(){
-        imageBox.innerHTML = '<span class="no-image">Image unavailable</span>';
+        imageBox.innerHTML =
+          '<span class="no-image">Image unavailable</span>';
       };
+
       imageBox.appendChild(img);
+    }else{
+      imageBox.innerHTML =
+        '<span class="no-image">Category Image</span>';
     }
 
     const info = document.createElement("div");
@@ -506,20 +546,14 @@ function renderCategories(){
     card.appendChild(imageBox);
     card.appendChild(info);
 
-    // 修复一：点击类别卡片，进入独立类别搜索页面
-    card.addEventListener("click",() => {
-      window.location.href =
-        "categories/category.html?slug=" +
-        encodeURIComponent(slug);
-    });
-
     container.appendChild(card);
 
-    // 分类筛选按钮仍然保留当前页面筛选功能
+    // 当前主页筛选功能保留
     const filter = document.createElement("button");
     filter.className = "filter-btn";
     filter.dataset.category = slug;
     filter.textContent = name;
+
     filter.addEventListener("click",() => selectCategory(category));
 
     filters.appendChild(filter);
@@ -527,27 +561,14 @@ function renderCategories(){
 }
 
 function selectCategory(category){
-  if(category === "all"){
-    selectedCategory = "all";
-  }else{
-    selectedCategory = category;
-  }
-
-  document.querySelectorAll(".category-card").forEach(card => {
-    card.classList.toggle(
-      "active",
-      selectedCategory !== "all" &&
-      card.dataset.category === getCategorySlug(selectedCategory)
-    );
-  });
+  selectedCategory = category;
 
   document.querySelectorAll(".filter-btn").forEach(button => {
-    button.classList.toggle(
-      "active",
-      selectedCategory === "all"
-        ? button.dataset.category === "all"
-        : button.dataset.category === getCategorySlug(selectedCategory)
-    );
+    const active = category === "all"
+      ? button.dataset.category === "all"
+      : button.dataset.category === getCategorySlug(category);
+
+    button.classList.toggle("active",active);
   });
 
   renderProducts();
@@ -563,7 +584,7 @@ async function loadProducts(){
 
   try{
     const response = await fetch(
-      "../machinery-parts-index.json?v=" + Date.now()
+      "/machinery-parts-index.json?v=" + Date.now()
     );
 
     if(!response.ok){
@@ -599,7 +620,8 @@ function renderProducts(){
       selectedCategory === "all" ||
       productMatchesCategory(item,selectedCategory);
 
-    return categoryMatch && getProductText(item).includes(keyword);
+    return categoryMatch &&
+      getProductText(item).includes(keyword);
   });
 
   container.innerHTML = "";
@@ -638,10 +660,12 @@ function renderProducts(){
       const img = document.createElement("img");
       img.src = image;
       img.alt = name;
+
       img.onerror = function(){
         imageBox.innerHTML =
           '<span class="no-image">Image unavailable</span>';
       };
+
       imageBox.appendChild(img);
     }else{
       imageBox.innerHTML =
@@ -671,12 +695,13 @@ function renderProducts(){
       }
     });
 
-    // 修复二：详情页使用 name 参数，与现有 product-details.html 匹配
     const linkElement = document.createElement("a");
     linkElement.className = "details-btn";
+
     linkElement.href =
-      "../product-details.html?type=machinery-part&name=" +
+      "/product-details.html?type=machinery-part&name=" +
       encodeURIComponent(item.name || "");
+
     linkElement.textContent = "View Details →";
 
     info.appendChild(linkElement);
@@ -687,13 +712,11 @@ function renderProducts(){
   });
 }
 
-document.getElementById("searchButton").addEventListener(
-  "click",renderProducts
-);
+document.getElementById("searchButton")
+  .addEventListener("click",renderProducts);
 
-document.getElementById("searchInput").addEventListener(
-  "input",renderProducts
-);
+document.getElementById("searchInput")
+  .addEventListener("input",renderProducts);
 
 async function init(){
   await Promise.all([
