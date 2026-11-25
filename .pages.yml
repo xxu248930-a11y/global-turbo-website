@@ -6,7 +6,7 @@ media:
 content:
 
   # 1. 品牌管理
-  - name: brands
+  - name: s
     label: Brands（品牌管理）
     type: collection
     path: brands
@@ -52,12 +52,12 @@ content:
         label: Product Name
         type: string
         required: true
-      - name: brand
-        label: Brand
+      - name: 
+        label: 
         type: reference
         required: true
         options:
-          collection: brands
+          collection: s
       - name: category
         label: Product Category
         type: reference
@@ -180,12 +180,12 @@ content:
         label: Part Name
         type: string
         required: true
-      - name: brand
-        label: Brand
+      - name: 
+        label: 
         type: reference
         required: true
         options:
-          collection: brands
+          collection: s
       - name: model
         label: Part Model
         type: string
@@ -216,7 +216,8 @@ content:
         label: WhatsApp Inquiry
         type: string
 
- # 6. 工程机械配件产品管理（唯一上传入口）
+
+# 6. Machinery Parts Product Management
   - name: machinery_parts
     label: Machinery Parts（工程机械配件上传）
     type: collection
@@ -228,47 +229,52 @@ content:
         label: Part Name
         type: string
         required: true
+
       - name: brand
         label: Brand
-        type: reference
-        required: true
-        options:
-          collection: brands
+        type: string
+
       - name: category
-        label: Machinery Category（所属工程机械分类）
-        type: reference
-        required: true
-        options:
-          collection: machinery_categories
+        label: Machinery Category
+        type: string
+
       - name: machine_model
         label: Machinery Model
         type: string
+
       - name: oem
         label: OEM Part Number
         type: string
+
       - name: reference_numbers
         label: Reference Numbers
         type: string
         list: true
+
       - name: applications
         label: Applications
         type: string
         list: true
+
       - name: image
         label: Main Product Image
         type: image
+
       - name: images
         label: Product Images
         type: image
         options:
           multiple:
             max: 10
+
       - name: description
         label: Part Description
         type: rich-text
+
       - name: whatsapp
         label: WhatsApp Inquiry
         type: string
+
 
   # 7. 首页精选产品管理
   - name: featured_products
