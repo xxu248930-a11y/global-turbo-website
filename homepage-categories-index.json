@@ -24,6 +24,13 @@
     "category_file": "homepage-categories/machinery-parts.json"
   },
   {
+    "name": " Test New Category",
+    "slug": " test-new-category",
+    "description": "Test new category",
+    "sort_order": "5",
+    "category_file": "homepage-categories/test-new-category.json"
+  },
+  {
     "name": "TURBOCHARGERS",
     "slug": "TURBOCHARGERS",
     "description": "Holset Garrett and other turbocharger brands.",
