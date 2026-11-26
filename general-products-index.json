@@ -1,1 +1,15 @@
-[]
+[
+  {
+    "name": "aaaaaaaa",
+    "main_category": "homepage-categories/machinery-parts.json",
+    "subcategory": "homepage-subcategories/test-category.json",
+    "brand": "qqq",
+    "model": " K27 ",
+    "oem": "55455555",
+    "image": "/media/微信图片_20260903154316_3008_4-1.jpg",
+    "origin": "中国",
+    "condition": "13",
+    "description": "jjjjjjjjjjjjjjjjjj",
+    "whatsapp": "8617377554610"
+  }
+]
