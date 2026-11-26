@@ -13,6 +13,17 @@
     "whatsapp": "8617377554610"
   },
   {
+    "name": "Garrett",
+    "main_category": "homepage-categories/test-new-category.json",
+    "subcategory": "homepage-subcategories/test-subcategory-2.json",
+    "brand": "收藏收藏",
+    "model": "TEST-002",
+    "oem": "55455555",
+    "images": [
+      "/media/微信截图_20250906100056-2.jpg"
+    ]
+  },
+  {
     "name": "Holset HX35 Turbocharger",
     "main_category": "homepage-categories/test-new-category.json",
     "subcategory": "homepage-subcategories/test-category.json",
