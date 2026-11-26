@@ -325,7 +325,8 @@ const indexFiles = {
   turbo: "/products-index.json",
   cummins: "/cummins-products-index.json",
   "engine-part": "/engine-parts-index.json",
-  "machinery-part": "/machinery-parts-index.json"
+  "machinery-part": "/machinery-parts-index.json",
+  "general-product": "/general-products-index.json"
 };
 
 function normalizeBrand(value) {
@@ -339,6 +340,16 @@ function normalizeBrand(value) {
     .split("/")
     .pop()
     .replace(/\.json$/i, "");
+}
+
+function formatCategory(value) {
+  const name = normalizeBrand(value);
+
+  if (!name) return "";
+
+  return name
+    .replace(/[-_]/g, " ")
+    .replace(/\b\w/g, letter => letter.toUpperCase());
 }
 
 function addInfoRow(container, label, value) {
@@ -410,12 +421,17 @@ function addDescription(parent, description) {
 }
 
 function getProductImages(product) {
+  const extraImages = Array.isArray(product.images)
+    ? product.images
+    : typeof product.images === "string"
+      ? [product.images]
+      : [];
+
   return [
     product.image,
-    ...(Array.isArray(product.images) ? product.images : [])
-  ].filter(Boolean).filter((value, index, array) =>
-    array.indexOf(value) === index
-  );
+    ...extraImages
+  ].filter(value => typeof value === "string" && value.trim())
+   .filter((value, index, array) => array.indexOf(value) === index);
 }
 
 function renderProduct(product, type) {
@@ -508,6 +524,22 @@ function renderProduct(product, type) {
   addInfoRow(summary, "Condition", product.condition);
   addInfoRow(summary, "Warranty", product.warranty);
 
+  /* GENERAL PRODUCT CATEGORY INFORMATION */
+
+  if (type === "general-product") {
+    addInfoRow(
+      summary,
+      "Main Category",
+      formatCategory(product.main_category)
+    );
+
+    addInfoRow(
+      summary,
+      "Subcategory",
+      formatCategory(product.subcategory)
+    );
+  }
+
   const quote = document.createElement("a");
   quote.className = "quote-button";
 
@@ -535,6 +567,7 @@ function renderProduct(product, type) {
   addTagSection(content, "Reference Numbers", product.reference_numbers);
   addTagSection(content, "Interchange Numbers", product.interchange_numbers);
   addTagSection(content, "Engine Models", product.engine_models);
+  addTagSection(content, "Machinery Models", product.machine_models);
   addTagSection(content, "Applications", product.applications);
 
   /* TECHNICAL SPECIFICATIONS */
