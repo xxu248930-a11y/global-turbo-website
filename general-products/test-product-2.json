@@ -4,5 +4,8 @@
   "subcategory": "homepage-subcategories/test-subcategory-2.json",
   "brand": "Test Brand",
   "model": "TEST-002",
-  "oem": "TEST002"
+  "oem": "TEST002",
+  "images": [
+    "/media/A_preview-2.png"
+  ]
 }
