@@ -178,13 +178,17 @@ fetch("/homepage-categories-index.json")
       const slug = String(category.slug || "").trim();
       const name = String(category.name || "").trim();
 
-      if (!name) return;
+      if (!name || !slug) return;
 
       const link = document.createElement("a");
       link.className = "category";
 
       const configuredUrl = String(category.page_url || "").trim();
-      link.href = configuredUrl || CATEGORY_FALLBACK_URLS[slug] || "#";
+
+      link.href =
+        configuredUrl ||
+        CATEGORY_FALLBACK_URLS[slug] ||
+        ("category.html?slug=" + encodeURIComponent(slug));
 
       const imagePath = String(category.image || "").trim();
 
