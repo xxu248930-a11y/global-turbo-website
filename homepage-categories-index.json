@@ -16,6 +16,14 @@
     "category_file": "homepage-categories/engine-parts.json"
   },
   {
+    "name": "Machinery Parts",
+    "slug": "machinery-parts",
+    "description": "Parts for construction and industrial machinery.",
+    "page_url": "machinery-parts/machinery-parts.html",
+    "sort_order": "4",
+    "category_file": "homepage-categories/machinery-parts.json"
+  },
+  {
     "name": "TURBOCHARGERS",
     "slug": "TURBOCHARGERS",
     "description": "Holset Garrett and other turbocharger brands.",
