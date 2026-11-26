@@ -73,11 +73,7 @@ jobs:
           }
 
           // 1. Original turbochargers and products
-          generateIndex(
-            "products",
-            "products-index.json",
-            "PRODUCTS"
-          );
+          generateIndex("products", "products-index.json", "PRODUCTS");
 
           // 2. Brands
           const brands = [];
@@ -118,10 +114,26 @@ jobs:
           );
 
           // 6. Construction machinery categories
-          generateIndex(
-            "machinery-categories",
+          // Add the actual category file path to every category record.
+          const machineryCategories = [];
+
+          scanJson("machinery-categories", (data, file) => {
+            machineryCategories.push({
+              ...data,
+              category_file: file.replace(/\\/g, "/")
+            });
+
+            console.log("Added MACHINERY CATEGORY:", file);
+          });
+
+          fs.writeFileSync(
             "machinery-categories-index.json",
-            "MACHINERY CATEGORIES"
+            JSON.stringify(machineryCategories, null, 2) + "\n"
+          );
+
+          console.log(
+            "TOTAL MACHINERY CATEGORIES:",
+            machineryCategories.length
           );
           NODE
 
