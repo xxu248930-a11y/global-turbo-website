@@ -5,12 +5,23 @@
   if (window.__siteWatermarkInitialized) return;
   window.__siteWatermarkInitialized = true;
 
+  // Only images inside known product containers receive watermarks.
+  const PRODUCT_IMAGE_SELECTOR = [
+    ".product img",
+    ".product-card img",
+    ".product-image img",
+    ".image-area img"
+  ].join(",");
+
+  let resizeObserver = null;
+
   function updateSize(img) {
     const wrapper = img.parentElement;
 
-    if (!wrapper || !wrapper.classList.contains("site-watermark-wrapper")) {
-      return;
-    }
+    if (
+      !wrapper ||
+      !wrapper.classList.contains("site-watermark-wrapper")
+    ) return;
 
     const rect = img.getBoundingClientRect();
 
@@ -82,31 +93,27 @@
     }
   }
 
-  const resizeObserver = typeof ResizeObserver !== "undefined"
-    ? new ResizeObserver(entries => {
-        entries.forEach(entry => {
-          updateSize(entry.target);
-        });
-      })
-    : null;
+  if (typeof ResizeObserver !== "undefined") {
+    resizeObserver = new ResizeObserver(entries => {
+      entries.forEach(entry => {
+        updateSize(entry.target);
+      });
+    });
+  }
 
   function scanImages() {
-    document.querySelectorAll("img").forEach(img => {
+    document.querySelectorAll(PRODUCT_IMAGE_SELECTOR).forEach(img => {
       if (img.dataset.watermarkReady === "true") return;
-
-      if (resizeObserver) {
-        if (img.dataset.watermarkObserved !== "true") {
-          img.dataset.watermarkObserved = "true";
-          resizeObserver.observe(img);
-        }
-      }
 
       protectImage(img);
     });
   }
 
   document.addEventListener("load", function (event) {
-    if (event.target instanceof HTMLImageElement) {
+    if (
+      event.target instanceof HTMLImageElement &&
+      event.target.matches(PRODUCT_IMAGE_SELECTOR)
+    ) {
       protectImage(event.target);
     }
   }, true);
