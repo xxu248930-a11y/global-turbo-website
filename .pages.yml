@@ -52,18 +52,21 @@ content:
         label: Product Name
         type: string
         required: true
-      - name:
-        label:
+
+      - name: brand
+        label: Brand
         type: reference
         required: true
         options:
           collection: s
+
       - name: category
         label: Product Category
         type: reference
         required: true
         options:
           collection: categories
+
       - name: model
         label: Model
         type: string
@@ -227,36 +230,29 @@ content:
       - name: model
         label: Part Model
         type: string
-
       - name: oem
         label: OEM Part Number
         type: string
-
       - name: reference_numbers
         label: Reference Numbers
         type: string
         list: true
-
       - name: engine_models
         label: Compatible Engine Models
         type: string
         list: true
-
       - name: image
         label: Main Product Image
         type: image
-
       - name: images
         label: Product Images
         type: image
         options:
           multiple:
             max: 10
-
       - name: description
         label: Part Description
         type: rich-text
-
       - name: whatsapp
         label: WhatsApp Inquiry
         type: string
