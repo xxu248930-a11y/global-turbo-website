@@ -212,13 +212,7 @@ content:
 
       - name: brand
         label: Brand
-        type: reference
-        required: true
-        options:
-          collection: s
-          search: "name"
-          value: "{path}"
-          label: "{fields.name}"
+        type: string
 
       - name: category
         label: Engine Parts Category
