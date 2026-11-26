@@ -11,5 +11,13 @@
     "condition": "13",
     "description": "jjjjjjjjjjjjjjjjjj",
     "whatsapp": "8617377554610"
+  },
+  {
+    "name": "test-product-2",
+    "main_category": "homepage-categories/test-new-category.json",
+    "subcategory": "homepage-subcategories/test-subcategory-2.json",
+    "brand": "Test Brand",
+    "model": "TEST-002",
+    "oem": "TEST002"
   }
 ]
