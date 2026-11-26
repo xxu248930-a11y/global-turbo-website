@@ -3,12 +3,14 @@
     "name": "挖掘机",
     "slug": "挖掘机",
     "description": "额分分分",
-    "image": "/media/微信图片_20261125192748_4496_4-3.jpg"
+    "image": "/media/微信图片_20261125192748_4496_4-3.jpg",
+    "category_file": "machinery-categories/3.json"
   },
   {
     "name": "Excavator Parts，",
     "slug": "PC56 回转减速器总成",
     "description": "发动机的动力领导",
-    "image": "/media/微信图片_20261125192748_4496_4.jpg"
+    "image": "/media/微信图片_20261125192748_4496_4.jpg",
+    "category_file": "machinery-categories/pc56.json"
   }
 ]
