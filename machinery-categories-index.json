@@ -12,5 +12,12 @@
     "description": "发动机的动力领导",
     "image": "/media/微信图片_20261125192748_4496_4.jpg",
     "category_file": "machinery-categories/pc56.json"
+  },
+  {
+    "name": "Wheel Loader",
+    "slug": "Wheel Loader 3",
+    "description": "VS方式为福娃是否为撒饿饭生娃儿发生过",
+    "image": "/media/original_template_exact_red_frames_transparent.png",
+    "category_file": "machinery-categories/wheel-loader-3.json"
   }
 ]
