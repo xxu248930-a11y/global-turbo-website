@@ -370,23 +370,15 @@ let allProducts = [];
 let allCategories = [];
 let selectedCategory = "all";
 
-function normalize(value){
+function normalizePath(value){
   return String(value || "")
-    .toLowerCase()
     .trim()
     .replace(/\\/g,"/")
-    .replace(/\.json$/i,"")
-    .replace(/\/+$/,"")
-    .split("/")
-    .pop()
-    .replace(/[^a-z0-9\u4e00-\u9fa5]+/g,"-")
-    .replace(/^-|-$/g,"");
+    .replace(/^\/+/,"")
+    .toLowerCase();
 }
 
-function getCategorySlug(category){
-  return normalize(category.slug || category.name || "");
-}
-
+/* Get category values from product data */
 function getCategoryValues(value){
   if(!value) return [];
 
@@ -400,6 +392,7 @@ function getCategoryValues(value){
 
   if(typeof value === "object"){
     return [
+      value.category_file,
       value.name,
       value.slug,
       value.value,
@@ -411,60 +404,26 @@ function getCategoryValues(value){
   return [];
 }
 
-function getProductCategoryKeys(item){
-  const rawValues = [
-    ...getCategoryValues(item.category),
-    item.category_slug,
-    item.category_name
-  ].filter(Boolean);
-
-  const keys = new Set();
-
-  rawValues.forEach(value => {
-    const text = String(value).trim().replace(/\\/g,"/");
-    if(!text) return;
-
-    keys.add(normalize(text));
-
-    const filename = text.split("/").pop();
-    keys.add(normalize(filename));
-  });
-
-  return keys;
-}
-
-function getCategoryKeys(category){
-  const keys = new Set();
-
-  [
-    category.slug,
-    category.name,
-    category.filename,
-    category.path,
-    category.file,
-    category.url
-  ].filter(Boolean).forEach(value => {
-    const text = String(value).trim().replace(/\\/g,"/");
-    keys.add(normalize(text));
-    keys.add(normalize(text.split("/").pop()));
-  });
-
-  return keys;
-}
-
+/* Exact matching using the actual category file path */
 function productMatchesCategory(item,category){
   if(category === "all") return true;
 
-  const productKeys = getProductCategoryKeys(item);
-  const categoryKeys = getCategoryKeys(category);
+  const categoryFile = normalizePath(category.category_file);
 
-  for(const key of categoryKeys){
-    if(key && productKeys.has(key)){
-      return true;
-    }
-  }
+  if(!categoryFile) return false;
 
-  return false;
+  const productCategoryValues = [
+    ...getCategoryValues(item.category),
+    item.category_file
+  ].filter(Boolean);
+
+  return productCategoryValues.some(value => {
+    return normalizePath(value) === categoryFile;
+  });
+}
+
+function getCategorySlug(category){
+  return String(category.category_file || category.slug || category.name || "");
 }
 
 function getProductText(item){
@@ -534,7 +493,6 @@ function renderCategories(){
 
   allCategories.forEach(category => {
     const name = category.name || "Machinery Category";
-    const slug = getCategorySlug(category);
     const description = category.description ||
       "Browse related machinery spare parts.";
     const image = category.image || "";
@@ -589,7 +547,7 @@ function renderCategories(){
     const filter = document.createElement("button");
     filter.type = "button";
     filter.className = "filter-btn";
-    filter.dataset.category = slug;
+    filter.dataset.category = getCategorySlug(category);
     filter.textContent = name;
 
     filter.addEventListener("click",() => selectCategory(category));
