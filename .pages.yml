@@ -168,7 +168,7 @@ content:
         label: WhatsApp Inquiry
         type: string
 
-  # 5. 发动机配件类别管理（新增）
+  # 5. 发动机配件类别管理
   - name: engine_categories
     label: Engine Parts Categories（发动机配件类别管理）
     type: collection
@@ -194,7 +194,7 @@ content:
         label: Category Image
         type: image
 
-  # 6. 发动机配件管理（保留原上传入口，增加类别选择）
+  # 6. 发动机配件管理
   - name: engine_parts
     label: Engine Parts（发动机配件）
     type: collection
@@ -203,18 +203,23 @@ content:
     format: json
     view:
       primary: name
-      fields: [name, category, model, oem]
+      fields: [name, brand, category, model, oem]
     fields:
       - name: name
         label: Part Name
         type: string
         required: true
-      - name:
-        label:
+
+      - name: brand
+        label: Brand
         type: reference
         required: true
         options:
           collection: s
+          search: "name"
+          value: "{path}"
+          label: "{fields.name}"
+
       - name: category
         label: Engine Parts Category
         type: reference
@@ -224,32 +229,40 @@ content:
           search: "name,slug"
           value: "{path}"
           label: "{fields.name}"
+
       - name: model
         label: Part Model
         type: string
+
       - name: oem
         label: OEM Part Number
         type: string
+
       - name: reference_numbers
         label: Reference Numbers
         type: string
         list: true
+
       - name: engine_models
         label: Compatible Engine Models
         type: string
         list: true
+
       - name: image
         label: Main Product Image
         type: image
+
       - name: images
         label: Product Images
         type: image
         options:
           multiple:
             max: 10
+
       - name: description
         label: Part Description
         type: rich-text
+
       - name: whatsapp
         label: WhatsApp Inquiry
         type: string
