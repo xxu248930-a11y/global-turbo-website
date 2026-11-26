@@ -13,6 +13,9 @@ on:
       - 'engine-categories/**'
       - 'machinery-parts/**'
       - 'machinery-categories/**'
+      - 'homepage-categories/**'
+      - 'homepage-subcategories/**'
+      - 'general-products/**'
       - '.github/workflows/build-product-index.yml'
   workflow_dispatch:
 
@@ -73,7 +76,27 @@ jobs:
             console.log("TOTAL " + label + ":", items.length);
           }
 
-          // 1. Original turbochargers and products
+          function generateCategoryIndex(directory, outputFile, label) {
+            const items = [];
+
+            scanJson(directory, (data, file) => {
+              items.push({
+                ...data,
+                category_file: file.replace(/\\/g, "/")
+              });
+
+              console.log("Added " + label + ":", file);
+            });
+
+            fs.writeFileSync(
+              outputFile,
+              JSON.stringify(items, null, 2) + "\n"
+            );
+
+            console.log("TOTAL " + label + ":", items.length);
+          }
+
+          // 1. Turbochargers and original products
           generateIndex("products", "products-index.json", "PRODUCTS");
 
           // 2. Brands
@@ -107,7 +130,7 @@ jobs:
             "ENGINE PARTS"
           );
 
-          // 5. Construction machinery parts
+          // 5. Machinery parts
           generateIndex(
             "machinery-parts",
             "machinery-parts-index.json",
@@ -115,47 +138,38 @@ jobs:
           );
 
           // 6. Engine parts categories
-          const engineCategories = [];
-
-          scanJson("engine-categories", (data, file) => {
-            engineCategories.push({
-              ...data,
-              category_file: file.replace(/\\/g, "/")
-            });
-
-            console.log("Added ENGINE CATEGORY:", file);
-          });
-
-          fs.writeFileSync(
+          generateCategoryIndex(
+            "engine-categories",
             "engine-categories-index.json",
-            JSON.stringify(engineCategories, null, 2) + "\n"
+            "ENGINE CATEGORIES"
           );
 
-          console.log(
-            "TOTAL ENGINE CATEGORIES:",
-            engineCategories.length
-          );
-
-          // 7. Construction machinery categories
-          const machineryCategories = [];
-
-          scanJson("machinery-categories", (data, file) => {
-            machineryCategories.push({
-              ...data,
-              category_file: file.replace(/\\/g, "/")
-            });
-
-            console.log("Added MACHINERY CATEGORY:", file);
-          });
-
-          fs.writeFileSync(
+          // 7. Machinery categories
+          generateCategoryIndex(
+            "machinery-categories",
             "machinery-categories-index.json",
-            JSON.stringify(machineryCategories, null, 2) + "\n"
+            "MACHINERY CATEGORIES"
           );
 
-          console.log(
-            "TOTAL MACHINERY CATEGORIES:",
-            machineryCategories.length
+          // 8. Homepage main categories
+          generateCategoryIndex(
+            "homepage-categories",
+            "homepage-categories-index.json",
+            "HOMEPAGE CATEGORIES"
+          );
+
+          // 9. Homepage subcategories
+          generateCategoryIndex(
+            "homepage-subcategories",
+            "homepage-subcategories-index.json",
+            "HOMEPAGE SUBCATEGORIES"
+          );
+
+          // 10. General products
+          generateIndex(
+            "general-products",
+            "general-products-index.json",
+            "GENERAL PRODUCTS"
           );
           NODE
 
@@ -171,6 +185,9 @@ jobs:
           git add -f engine-categories-index.json
           git add -f machinery-parts-index.json
           git add -f machinery-categories-index.json
+          git add -f homepage-categories-index.json
+          git add -f homepage-subcategories-index.json
+          git add -f general-products-index.json
 
           if git diff --cached --quiet; then
             echo "Indexes are already up to date."
