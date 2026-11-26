@@ -37,22 +37,77 @@ nav a{color:white;text-decoration:none;margin-left:18px;font-size:14px}
 main{padding:35px 6%;max-width:1400px;margin:auto}
 
 .subcategories{
-  display:flex;
-  flex-wrap:wrap;
-  gap:10px;
-  margin:18px 0 25px
+  display:grid;
+  grid-template-columns:repeat(auto-fill,minmax(190px,1fr));
+  gap:18px;
+  margin:18px 0 30px
 }
 
-.subcategory-btn{
+.subcategory-card{
+  border:1px solid #eee;
+  background:#fff;
+  border-radius:9px;
+  overflow:hidden;
+  cursor:pointer;
+  text-align:left;
+  color:#333;
+  transition:transform .2s,box-shadow .2s;
+  min-width:0
+}
+
+.subcategory-card:hover{
+  transform:translateY(-3px);
+  box-shadow:0 5px 18px rgba(0,0,0,.1)
+}
+
+.subcategory-card.active{
+  border:2px solid #bd2029;
+}
+
+.subcategory-image{
+  width:100%;
+  aspect-ratio:4 / 3;
+  background:#f3f3f3;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  overflow:hidden
+}
+
+.subcategory-image img{
+  width:100%;
+  height:100%;
+  display:block;
+  object-fit:cover;
+  object-position:center
+}
+
+.subcategory-image.no-image{
+  color:#999;
+  font-size:13px;
+  text-align:center;
+  padding:10px
+}
+
+.subcategory-name{
+  display:block;
+  padding:13px 12px;
+  font-size:15px;
+  font-weight:bold;
+  overflow-wrap:anywhere
+}
+
+.all-products-btn{
   border:1px solid #ddd;
   background:#fff;
-  padding:9px 17px;
+  padding:10px 18px;
   border-radius:5px;
   cursor:pointer;
-  color:#333
+  color:#333;
+  margin-bottom:15px
 }
 
-.subcategory-btn.active{
+.all-products-btn.active{
   background:#bd2029;
   color:#fff;
   border-color:#bd2029
@@ -84,7 +139,6 @@ main{padding:35px 6%;max-width:1400px;margin:auto}
   min-width:0
 }
 
-/* Unified square product image area */
 .product-image{
   width:100%;
   aspect-ratio:1 / 1;
@@ -105,9 +159,7 @@ main{padding:35px 6%;max-width:1400px;margin:auto}
   background:#fff
 }
 
-.product-image.no-image{
-  background:#fff;
-}
+.product-image.no-image{background:#fff}
 
 .product-info{
   padding:16px;
@@ -163,14 +215,27 @@ footer{
   nav{margin-top:12px}
   nav a{margin:0 12px 0 0}
   main{padding:25px 4%}
+
+  .subcategories{
+    grid-template-columns:repeat(2,minmax(0,1fr));
+    gap:12px
+  }
+
+  .subcategory-name{
+    padding:10px;
+    font-size:14px
+  }
+
   .products{
     grid-template-columns:repeat(2,minmax(0,1fr));
     gap:12px
   }
+
   .product-image{
     aspect-ratio:1 / 1;
     padding:8px
   }
+
   .product-info{padding:11px}
   .product-info h3{font-size:15px}
 }
@@ -198,6 +263,11 @@ footer{
     <div class="section-heading">
       <h2>Product Subcategories</h2>
     </div>
+
+    <button type="button" class="all-products-btn active" id="all-products-btn">
+      All Products
+    </button>
+
     <div class="subcategories" id="subcategory-list">
       <div class="empty">Loading subcategories...</div>
     </div>
@@ -265,38 +335,66 @@ function getSearchText(product) {
 
 function renderSubcategories() {
   const list = document.getElementById("subcategory-list");
+  const allButton = document.getElementById("all-products-btn");
+
   list.innerHTML = "";
 
-  const allButton = document.createElement("button");
-  allButton.className =
-    "subcategory-btn" + (selectedSubcategory === "all" ? " active" : "");
-  allButton.textContent = "All Products";
-
-  allButton.onclick = function() {
-    selectedSubcategory = "all";
-    renderSubcategories();
-    renderProducts();
-  };
-
-  list.appendChild(allButton);
+  allButton.classList.toggle(
+    "active",
+    selectedSubcategory === "all"
+  );
 
   allSubcategories.forEach(subcategory => {
-    const button = document.createElement("button");
+    const categoryPath = normalizePath(subcategory.category_file);
 
-    button.className =
-      "subcategory-btn" +
-      (selectedSubcategory === normalizePath(subcategory.category_file) ? " active" : "");
+    const card = document.createElement("button");
+    card.type = "button";
+    card.className =
+      "subcategory-card" +
+      (selectedSubcategory === categoryPath ? " active" : "");
 
-    button.textContent = subcategory.name || "Subcategory";
+    const imageBox = document.createElement("div");
+    imageBox.className = "subcategory-image";
 
-    button.onclick = function() {
-      selectedSubcategory = normalizePath(subcategory.category_file);
+    const imagePath = String(subcategory.image || "").trim();
+
+    if (imagePath) {
+      const img = document.createElement("img");
+      img.src = imagePath;
+      img.alt = subcategory.name || "Subcategory";
+      img.loading = "lazy";
+
+      img.onerror = function() {
+        this.remove();
+        imageBox.classList.add("no-image");
+        imageBox.textContent = "Image unavailable";
+      };
+
+      imageBox.appendChild(img);
+    } else {
+      imageBox.classList.add("no-image");
+      imageBox.textContent = "No image";
+    }
+
+    const name = document.createElement("span");
+    name.className = "subcategory-name";
+    name.textContent = subcategory.name || "Subcategory";
+
+    card.append(imageBox, name);
+
+    card.onclick = function() {
+      selectedSubcategory = categoryPath;
       renderSubcategories();
       renderProducts();
     };
 
-    list.appendChild(button);
+    list.appendChild(card);
   });
+
+  if (allSubcategories.length === 0) {
+    list.innerHTML =
+      '<div class="empty">No subcategories available.</div>';
+  }
 }
 
 function renderProducts() {
@@ -466,6 +564,12 @@ async function loadCategoryPage() {
   }
 }
 
+document.getElementById("all-products-btn").addEventListener("click", function() {
+  selectedSubcategory = "all";
+  renderSubcategories();
+  renderProducts();
+});
+
 document.getElementById("product-search").addEventListener("input", function() {
   renderProducts();
 });
@@ -475,8 +579,6 @@ loadCategoryPage();
 
 <script src="/watermark.js" defer></script>
 <script src="/image-adjust.js" defer></script>
-  
-<script src="/watermark.js"></script>
 
 </body>
 </html>
