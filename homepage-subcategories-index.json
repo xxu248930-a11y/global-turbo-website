@@ -5,5 +5,12 @@
     "main_category": "homepage-categories/machinery-parts.json",
     "description": "Test subcategory",
     "category_file": "homepage-subcategories/test-category.json"
+  },
+  {
+    "name": "Test Subcategory 2",
+    "slug": "test-subcategory-2",
+    "main_category": "homepage-categories/test-new-category.json",
+    "description": "Test subcategory 2",
+    "category_file": "homepage-subcategories/test-subcategory-2.json"
   }
 ]
