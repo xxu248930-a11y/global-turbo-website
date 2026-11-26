@@ -4,6 +4,7 @@
     "slug": "Test Category",
     "main_category": "homepage-categories/test-new-category.json",
     "description": "Test subcategory",
+    "image": "/media/微信截图_20250906100056-4.jpg",
     "category_file": "homepage-subcategories/test-category.json"
   },
   {
