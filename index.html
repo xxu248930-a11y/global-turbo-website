@@ -23,7 +23,10 @@ section{padding:55px 6%}
 .section-title h2{font-size:30px}
 .section-title p{color:#777;margin-top:8px}
 .categories{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:18px}
-.category{background:white;padding:25px;border-radius:8px;border:1px solid #eee}
+.category{background:white;border-radius:8px;border:1px solid #eee;overflow:hidden;display:block;color:inherit;text-decoration:none;transition:transform .2s,box-shadow .2s}
+.category:hover{transform:translateY(-3px);box-shadow:0 5px 18px rgba(0,0,0,.08)}
+.category img{width:100%;height:160px;object-fit:cover;display:block}
+.category-info{padding:25px}
 .category h3{margin-bottom:8px;color:#b51e27}
 .category p{color:#666;font-size:14px}
 .products{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:22px}
@@ -46,67 +49,36 @@ nav a{margin:0 12px 0 0}
 .hero{padding:60px 6%}
 }
 
-/* Featured Products - Independent Display */
-#featured-products {
-  padding: 50px 20px;
+#featured-products{padding:50px 20px}
+#featured-products .featured-grid{
+  display:grid;
+  grid-template-columns:repeat(3,minmax(0,1fr));
+  gap:24px;
+  max-width:1200px;
+  margin:0 auto;
 }
-
-#featured-products .featured-grid {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 24px;
-  max-width: 1200px;
-  margin: 0 auto;
+#featured-products .featured-card{
+  background:#fff;
+  border:1px solid #eee;
+  border-radius:10px;
+  overflow:hidden;
+  padding:14px;
+  text-align:center;
 }
-
-#featured-products .featured-card {
-  background: #fff;
-  border: 1px solid #eee;
-  border-radius: 10px;
-  overflow: hidden;
-  padding: 14px;
-  text-align: center;
+#featured-products .featured-card img{
+  width:100%;
+  height:220px;
+  object-fit:cover;
+  object-position:center;
+  display:block;
+  margin:0 auto 12px;
+  border-radius:8px;
 }
-
-#featured-products .featured-card img {
-  width: 100%;
-  height: 220px;
-  object-fit: cover;
-  object-position: center;
-  display: block;
-  margin: 0 auto 12px;
-  border-radius: 8px;
-  image-rendering: auto;
-}
-
-#featured-products .featured-card h3 {
-  font-size: 17px;
-  margin: 8px 0;
-}
-
-#featured-products .featured-card p {
-  font-size: 14px;
-  color: #666;
-  margin: 6px 0;
-}
-
-#featured-products .featured-card a {
-  display: inline-block;
-  margin-top: 10px;
-  color: #c5222c;
-  font-weight: bold;
-  text-decoration: none;
-}
-
-@media (max-width: 768px) {
-  #featured-products .featured-grid {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 12px;
-  }
-
-  #featured-products .featured-card img {
-    height: 140px;
-  }
+#featured-products .featured-card h3{font-size:17px;margin:8px 0}
+#featured-products .featured-card a{color:#c5222c;font-weight:bold;text-decoration:none}
+@media(max-width:768px){
+  #featured-products .featured-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+  #featured-products .featured-card img{height:140px}
 }
 </style>
 </head>
@@ -126,7 +98,7 @@ nav a{margin:0 12px 0 0}
 <div class="hero" id="home">
   <h1>Genuine Turbochargers & Diesel Engine Parts Supplier</h1>
   <p>Professional supplier of Cummins engines, Holset turbochargers and industrial engine parts. Worldwide export support and reliable service.</p >
-  <a class="btn" href="#products">Explore Products</a >
+  <a class="btn" href="#featured-products">Explore Products</a >
   <a class="btn" href="#contact">Contact Us</a >
 </div>
 
@@ -136,32 +108,8 @@ nav a{margin:0 12px 0 0}
     <p>Parts and solutions for diesel engines and industrial applications</p >
   </div>
 
-  <div class="categories">
-
-    <!-- Turbochargers -->
-    <a class="category" href="turbochargers.html" style="display:block;color:inherit;text-decoration:none;">
-      <h3>Turbochargers</h3>
-      <p>Holset, Garrett and other turbocharger brands.</p >
-    </a >
-
-    <!-- Cummins Engines -->
-    <a class="category" href="cummins/cummins.html" style="display:block;color:inherit;text-decoration:none;">
-      <h3>Cummins Engines</h3>
-      <p>Genuine Cummins diesel engines and engine assemblies.</p >
-    </a >
-
-    <!-- Engine Parts -->
-    <a class="category" href="engine-parts.html" style="display:block;color:inherit;text-decoration:none;">
-      <h3>Engine Parts</h3>
-      <p>OEM and aftermarket diesel engine components.</p >
-    </a >
-
-    <!-- Machinery Parts -->
-    <a class="category" href="machinery-parts/machinery-parts.html" style="display:block;color:inherit;text-decoration:none;">
-      <h3>Machinery Parts</h3>
-      <p>Parts for construction and industrial machinery.</p >
-    </a >
-
+  <div class="categories" id="homepage-category-list">
+    <div class="empty">Loading product categories...</div>
   </div>
 </section>
 
@@ -187,22 +135,94 @@ nav a{margin:0 12px 0 0}
   <div class="section-title">
     <h2>Request a Quote</h2>
     <p>Send us your part number, engine model and required quantity.</p >
-    <a class="btn" id="main-whatsapp" href="https://wa.me/" target="_blank">Contact Us on WhatsApp</a >
+    <a class="btn" id="main-whatsapp" href="https://wa.me/8617377554610" target="_blank" rel="noopener">Contact Us on WhatsApp</a >
   </div>
 </section>
 
 <footer>© 2026 Global Turbo & Engine Parts Supplier. All Rights Reserved.</footer>
 
 <script>
-const WHATSAPP_NUMBER = "YOUR_WHATSAPP_NUMBER";
+const CATEGORY_FALLBACK_URLS = {
+  "turbochargers": "turbochargers.html",
+  "cummins-engines": "cummins/cummins.html",
+  "engine-parts": "engine-parts.html",
+  "machinery-parts": "machinery-parts/machinery-parts.html"
+};
 
-function askWhatsApp(productName) {
-  const message = "Hello, I would like to inquire about: " + productName;
-  const url = "https://wa.me/" + WHATSAPP_NUMBER + "?text=" + encodeURIComponent(message);
-  window.open(url, "_blank");
+function showCategoryError(message) {
+  document.getElementById("homepage-category-list").innerHTML =
+    '<div class="empty">' + message + '</div>';
 }
 
-fetch("featured-products.json")
+fetch("/homepage-categories-index.json")
+  .then(response => {
+    if (!response.ok) {
+      throw new Error("Homepage category index not found");
+    }
+    return response.json();
+  })
+  .then(categories => {
+    const list = document.getElementById("homepage-category-list");
+    list.innerHTML = "";
+
+    if (!Array.isArray(categories) || categories.length === 0) {
+      showCategoryError("No product categories available.");
+      return;
+    }
+
+    categories.sort((a, b) => {
+      return Number(a.sort_order || 999) - Number(b.sort_order || 999);
+    });
+
+    categories.forEach(category => {
+      const slug = String(category.slug || "").trim();
+      const name = String(category.name || "").trim();
+
+      if (!name) return;
+
+      const link = document.createElement("a");
+      link.className = "category";
+
+      const configuredUrl = String(category.page_url || "").trim();
+      link.href = configuredUrl || CATEGORY_FALLBACK_URLS[slug] || "#";
+
+      const imagePath = String(category.image || "").trim();
+
+      if (imagePath) {
+        const img = document.createElement("img");
+        img.src = imagePath;
+        img.alt = name;
+        img.loading = "lazy";
+        img.onerror = function() {
+          this.remove();
+        };
+        link.appendChild(img);
+      }
+
+      const info = document.createElement("div");
+      info.className = "category-info";
+
+      const title = document.createElement("h3");
+      title.textContent = name;
+
+      const description = document.createElement("p");
+      description.textContent = category.description || "";
+
+      info.append(title, description);
+      link.appendChild(info);
+      list.appendChild(link);
+    });
+
+    if (!list.children.length) {
+      showCategoryError("No valid product categories available.");
+    }
+  })
+  .catch(error => {
+    console.error("Homepage categories loading error:", error);
+    showCategoryError("Product categories are temporarily unavailable.");
+  });
+
+fetch("/featured-products.json")
   .then(response => {
     if (!response.ok) {
       throw new Error("Featured products not found");
@@ -229,7 +249,10 @@ fetch("featured-products.json")
 
       const img = document.createElement("img");
       img.src = product.image || "";
-      img.alt = product.model || "Turbocharger";
+      img.alt = product.model || "Product";
+      img.onerror = function() {
+        this.style.display = "none";
+      };
 
       const title = document.createElement("h3");
       title.textContent = product.model || "Product";
