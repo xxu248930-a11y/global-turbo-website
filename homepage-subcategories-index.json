@@ -2,7 +2,7 @@
   {
     "name": "test category",
     "slug": "Test Category",
-    "main_category": "homepage-categories/machinery-parts.json",
+    "main_category": "homepage-categories/test-new-category.json",
     "description": "Test subcategory",
     "category_file": "homepage-subcategories/test-category.json"
   },
