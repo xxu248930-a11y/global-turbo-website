@@ -4,8 +4,7 @@ media:
   output: /media
 
 content:
-
-  # 1. 品牌管理
+  # 1. Brands
   - name: s
     label: Brands（品牌管理）
     type: collection
@@ -24,9 +23,9 @@ content:
         label: Brand Logo
         type: image
 
-  # 2. 产品分类管理
+  # 2. Turbocharger Categories
   - name: categories
-    label: Categories（产品分类）
+    label: Categories（涡轮增压器分类）
     type: collection
     path: categories
     filename: "{primary}.json"
@@ -40,7 +39,7 @@ content:
         label: Category Description
         type: text
 
-  # 3. 涡轮增压器及原有产品管理
+  # 3. Turbochargers and Parts
   - name: products
     label: Products（Turbochargers & Parts）
     type: collection
@@ -52,21 +51,18 @@ content:
         label: Product Name
         type: string
         required: true
-
       - name: brand
         label: Brand
         type: reference
         required: true
         options:
           collection: s
-
       - name: category
         label: Product Category
         type: reference
         required: true
         options:
           collection: categories
-
       - name: model
         label: Model
         type: string
@@ -129,7 +125,7 @@ content:
             label: Value
             type: string
 
-  # 4. 康明斯发动机管理
+  # 4. Cummins Engines
   - name: cummins_products
     label: Cummins Products（康明斯发动机）
     type: collection
@@ -171,7 +167,7 @@ content:
         label: WhatsApp Inquiry
         type: string
 
-  # 5. 发动机配件类别管理
+  # 5. Engine Parts Categories
   - name: engine_categories
     label: Engine Parts Categories（发动机配件类别管理）
     type: collection
@@ -197,7 +193,7 @@ content:
         label: Category Image
         type: image
 
-  # 6. 发动机配件管理
+  # 6. Engine Parts
   - name: engine_parts
     label: Engine Parts（发动机配件）
     type: collection
@@ -212,11 +208,9 @@ content:
         label: Part Name
         type: string
         required: true
-
       - name: brand
         label: Brand
         type: string
-
       - name: category
         label: Engine Parts Category
         type: reference
@@ -226,7 +220,6 @@ content:
           search: "name,slug"
           value: "{path}"
           label: "{fields.name}"
-
       - name: model
         label: Part Model
         type: string
@@ -257,7 +250,7 @@ content:
         label: WhatsApp Inquiry
         type: string
 
-  # 7. 工程机械类别管理
+  # 7. Machinery Categories
   - name: machinery_categories
     label: Machinery Categories（工程机械类别管理）
     type: collection
@@ -283,7 +276,7 @@ content:
         label: Category Image
         type: image
 
-  # 8. 工程机械配件管理
+  # 8. Machinery Parts
   - name: machinery_parts
     label: Machinery Parts（工程机械配件上传）
     type: collection
@@ -346,7 +339,160 @@ content:
         label: WhatsApp Inquiry
         type: string
 
-  # 9. 首页精选产品管理
+  # 9. Homepage Main Categories
+  - name: homepage_categories
+    label: Homepage Categories（首页主分类管理）
+    type: collection
+    path: homepage-categories
+    filename: "{fields.slug}.json"
+    format: json
+    view:
+      primary: name
+      fields: [name, slug]
+    fields:
+      - name: name
+        label: Main Category Name
+        type: string
+        required: true
+      - name: slug
+        label: Main Category Slug
+        type: string
+        required: true
+      - name: description
+        label: Category Description
+        type: text
+      - name: image
+        label: Category Image
+        type: image
+      - name: page_url
+        label: Category Page URL
+        type: string
+      - name: sort_order
+        label: Display Order
+        type: string
+
+  # 10. Homepage Subcategories
+  - name: homepage_subcategories
+    label: Homepage Subcategories（首页子分类管理）
+    type: collection
+    path: homepage-subcategories
+    filename: "{fields.slug}.json"
+    format: json
+    view:
+      primary: name
+      fields: [name, slug, main_category]
+    fields:
+      - name: name
+        label: Subcategory Name
+        type: string
+        required: true
+      - name: slug
+        label: Subcategory Slug
+        type: string
+        required: true
+      - name: main_category
+        label: Parent Main Category
+        type: reference
+        required: true
+        options:
+          collection: homepage_categories
+          search: "name,slug"
+          value: "{path}"
+          label: "{fields.name}"
+      - name: description
+        label: Subcategory Description
+        type: text
+      - name: image
+        label: Subcategory Image
+        type: image
+
+  # 11. General Products
+  - name: general_products
+    label: General Products（通用产品上传）
+    type: collection
+    path: general-products
+    filename: "{primary}.json"
+    format: json
+    view:
+      primary: name
+      fields: [name, main_category, subcategory, brand, model, oem]
+    fields:
+      - name: name
+        label: Product Name
+        type: string
+        required: true
+      - name: main_category
+        label: Main Category
+        type: reference
+        required: true
+        options:
+          collection: homepage_categories
+          search: "name,slug"
+          value: "{path}"
+          label: "{fields.name}"
+      - name: subcategory
+        label: Subcategory
+        type: reference
+        options:
+          collection: homepage_subcategories
+          search: "name,slug"
+          value: "{path}"
+          label: "{fields.name}"
+      - name: brand
+        label: Brand
+        type: string
+      - name: model
+        label: Product Model
+        type: string
+      - name: oem
+        label: OEM Part Number
+        type: string
+      - name: reference_numbers
+        label: Reference Numbers
+        type: string
+        list: true
+      - name: interchange_numbers
+        label: Interchange Numbers
+        type: string
+        list: true
+      - name: applications
+        label: Applications
+        type: string
+        list: true
+      - name: machine_models
+        label: Compatible Machine Models
+        type: string
+        list: true
+      - name: engine_models
+        label: Compatible Engine Models
+        type: string
+        list: true
+      - name: image
+        label: Main Product Image
+        type: image
+      - name: images
+        label: Product Images
+        type: image
+        options:
+          multiple:
+            max: 10
+      - name: origin
+        label: Country of Origin
+        type: string
+      - name: condition
+        label: Product Condition
+        type: string
+      - name: warranty
+        label: Warranty
+        type: text
+      - name: description
+        label: Product Description
+        type: rich-text
+      - name: whatsapp
+        label: WhatsApp Inquiry
+        type: string
+
+  # 12. Featured Products
   - name: featured_products
     label: Featured Products（首页精选产品）
     type: file
