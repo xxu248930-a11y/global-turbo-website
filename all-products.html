@@ -343,24 +343,29 @@ let allProducts = [];
 
 const productSources = [
   {
-    file: "products-index.json",
+    file: "/products-index.json",
     type: "turbo",
     label: "Turbochargers & Parts"
   },
   {
-    file: "cummins-products-index.json",
+    file: "/cummins-products-index.json",
     type: "cummins",
     label: "Cummins Engines"
   },
   {
-    file: "engine-parts-index.json",
+    file: "/engine-parts-index.json",
     type: "engine-part",
     label: "Engine Parts"
   },
   {
-    file: "machinery-parts-index.json",
+    file: "/machinery-parts-index.json",
     type: "machinery-part",
     label: "Machinery Parts"
+  },
+  {
+    file: "/general-products-index.json",
+    type: "general-product",
+    label: "General Products"
   }
 ];
 
@@ -369,6 +374,13 @@ function normalize(value) {
     .toLowerCase()
     .replace(/[\s\-_.\/\\]+/g, "")
     .replace(/[^\p{L}\p{N}]/gu, "");
+}
+
+function normalizePath(value) {
+  return String(value || "")
+    .trim()
+    .replace(/\\/g, "/")
+    .replace(/^\/+/, "");
 }
 
 function normalizeBrand(value) {
@@ -597,6 +609,34 @@ async function loadAllProducts() {
   );
 
   allProducts = results.flat();
+
+  // Load main category names for general products.
+  const categoryResponse = await fetch("/homepage-categories-index.json");
+
+  if (categoryResponse.ok) {
+    const categories = await categoryResponse.json();
+
+    if (Array.isArray(categories)) {
+      const categoryNames = {};
+
+      categories.forEach(category => {
+        const path = normalizePath(category.category_file);
+
+        if (path && category.name) {
+          categoryNames[path] = category.name;
+        }
+      });
+
+      allProducts.forEach(product => {
+        if (product.productType === "general-product") {
+          const mainCategory = normalizePath(product.main_category);
+
+          product.productTypeLabel =
+            categoryNames[mainCategory] || "General Products";
+        }
+      });
+    }
+  }
 
   populateFilters();
   renderProducts();
