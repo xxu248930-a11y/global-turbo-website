@@ -5,16 +5,34 @@
   if (window.__siteWatermarkInitialized) return;
   window.__siteWatermarkInitialized = true;
 
-  // Only watermark product images, never category images or banners.
+  // Product images only. Category images, logos and banners are excluded.
   const PRODUCT_IMAGE_SELECTOR = [
     ".product img",
     ".product-card img",
     ".product-image img",
     ".image-area img",
-    ".featured-card img"
+    ".featured-card img",
+    ".main-image img",
+    ".gallery img"
   ].join(",");
 
   let resizeObserver = null;
+
+  function updateSize(img) {
+    const wrapper = img.parentElement;
+
+    if (
+      !wrapper ||
+      !wrapper.classList.contains("site-watermark-wrapper")
+    ) return;
+
+    const rect = img.getBoundingClientRect();
+
+    if (rect.width > 0 && rect.height > 0) {
+      wrapper.style.width = rect.width + "px";
+      wrapper.style.height = rect.height + "px";
+    }
+  }
 
   function protectImage(img) {
     if (!(img instanceof HTMLImageElement)) return;
@@ -22,12 +40,14 @@
     if (!img.parentNode) return;
 
     const rect = img.getBoundingClientRect();
+
     if (rect.width <= 0 || rect.height <= 0) return;
 
     const oldDisplay = getComputedStyle(img).display;
     const wrapper = document.createElement("span");
 
     wrapper.className = "site-watermark-wrapper";
+
     wrapper.style.cssText = `
       position: relative;
       display: ${oldDisplay === "inline" ? "inline-block" : "block"};
@@ -46,6 +66,7 @@
     img.setAttribute("draggable", "false");
 
     const watermark = document.createElement("span");
+
     watermark.textContent = WATERMARK_TEXT;
     watermark.setAttribute("aria-hidden", "true");
 
@@ -75,25 +96,11 @@
     }
   }
 
-  function updateSize(img) {
-    const wrapper = img.parentElement;
-
-    if (
-      !wrapper ||
-      !wrapper.classList.contains("site-watermark-wrapper")
-    ) return;
-
-    const rect = img.getBoundingClientRect();
-
-    if (rect.width > 0 && rect.height > 0) {
-      wrapper.style.width = rect.width + "px";
-      wrapper.style.height = rect.height + "px";
-    }
-  }
-
   if (typeof ResizeObserver !== "undefined") {
     resizeObserver = new ResizeObserver(entries => {
-      entries.forEach(entry => updateSize(entry.target));
+      entries.forEach(entry => {
+        updateSize(entry.target);
+      });
     });
   }
 
@@ -128,6 +135,7 @@
   scanImages();
 
   const mutationObserver = new MutationObserver(scanImages);
+
   mutationObserver.observe(document.documentElement, {
     childList: true,
     subtree: true
