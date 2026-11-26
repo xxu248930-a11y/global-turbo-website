@@ -2,5 +2,6 @@
   "name": "test category",
   "slug": "Test Category",
   "main_category": "homepage-categories/test-new-category.json",
-  "description": "Test subcategory"
+  "description": "Test subcategory",
+  "image": "/media/微信截图_20250906100056-4.jpg"
 }
