@@ -374,12 +374,17 @@ function normalize(value){
   return String(value || "")
     .toLowerCase()
     .trim()
+    .replace(/\\/g,"/")
+    .replace(/\.json$/i,"")
+    .replace(/\/+$/,"")
+    .split("/")
+    .pop()
     .replace(/[^a-z0-9\u4e00-\u9fa5]+/g,"-")
     .replace(/^-|-$/g,"");
 }
 
 function getCategorySlug(category){
-  return String(category.slug || normalize(category.name));
+  return normalize(category.slug || category.name || "");
 }
 
 function getCategoryValues(value){
@@ -398,11 +403,68 @@ function getCategoryValues(value){
       value.name,
       value.slug,
       value.value,
-      value.label
+      value.label,
+      value.path
     ].filter(Boolean).map(String);
   }
 
   return [];
+}
+
+function getProductCategoryKeys(item){
+  const rawValues = [
+    ...getCategoryValues(item.category),
+    item.category_slug,
+    item.category_name
+  ].filter(Boolean);
+
+  const keys = new Set();
+
+  rawValues.forEach(value => {
+    const text = String(value).trim().replace(/\\/g,"/");
+    if(!text) return;
+
+    keys.add(normalize(text));
+
+    const filename = text.split("/").pop();
+    keys.add(normalize(filename));
+  });
+
+  return keys;
+}
+
+function getCategoryKeys(category){
+  const keys = new Set();
+
+  [
+    category.slug,
+    category.name,
+    category.filename,
+    category.path,
+    category.file,
+    category.url
+  ].filter(Boolean).forEach(value => {
+    const text = String(value).trim().replace(/\\/g,"/");
+    keys.add(normalize(text));
+    keys.add(normalize(text.split("/").pop()));
+  });
+
+  return keys;
+}
+
+function productMatchesCategory(item,category){
+  if(category === "all") return true;
+
+  const productKeys = getProductCategoryKeys(item);
+  const categoryKeys = getCategoryKeys(category);
+
+  for(const key of categoryKeys){
+    if(key && productKeys.has(key)){
+      return true;
+    }
+  }
+
+  return false;
 }
 
 function getProductText(item){
@@ -417,23 +479,6 @@ function getProductText(item){
     item.reference_numbers,
     ...getCategoryValues(item.category)
   ].flat().filter(Boolean).join(" ").toLowerCase();
-}
-
-function productMatchesCategory(item,category){
-  if(category === "all") return true;
-
-  const target = [
-    category.name,
-    category.slug
-  ].filter(Boolean).map(normalize);
-
-  const productValues = [
-    ...getCategoryValues(item.category),
-    item.category_slug,
-    item.category_name
-  ].filter(Boolean).map(normalize);
-
-  return productValues.some(value => target.includes(value));
 }
 
 async function loadCategories(){
@@ -483,6 +528,7 @@ function renderCategories(){
   if(allCategories.length === 0){
     container.innerHTML =
       '<div class="empty">No machinery categories have been added yet.</div>';
+    updateCategoryActiveState();
     return;
   }
 
@@ -493,7 +539,6 @@ function renderCategories(){
       "Browse related machinery spare parts.";
     const image = category.image || "";
 
-    // 类别卡片改为按钮，不再跳转新页面
     const card = document.createElement("button");
     card.type = "button";
     card.className = "category-card";
@@ -539,7 +584,6 @@ function renderCategories(){
 
     card.appendChild(imageBox);
     card.appendChild(info);
-
     container.appendChild(card);
 
     const filter = document.createElement("button");
