@@ -52,8 +52,8 @@ content:
         label: Product Name
         type: string
         required: true
-      - name: 
-        label: 
+      - name:
+        label:
         type: reference
         required: true
         options:
@@ -168,24 +168,62 @@ content:
         label: WhatsApp Inquiry
         type: string
 
-  # 5. 发动机配件管理
+  # 5. 发动机配件类别管理（新增）
+  - name: engine_categories
+    label: Engine Parts Categories（发动机配件类别管理）
+    type: collection
+    path: engine-categories
+    filename: "{fields.slug}.json"
+    format: json
+    view:
+      primary: name
+      fields: [name, slug]
+    fields:
+      - name: name
+        label: Category Name
+        type: string
+        required: true
+      - name: slug
+        label: Category Slug
+        type: string
+        required: true
+      - name: description
+        label: Category Description
+        type: text
+      - name: image
+        label: Category Image
+        type: image
+
+  # 6. 发动机配件管理（保留原上传入口，增加类别选择）
   - name: engine_parts
     label: Engine Parts（发动机配件）
     type: collection
     path: engine-parts
     filename: "{primary}.json"
     format: json
+    view:
+      primary: name
+      fields: [name, category, model, oem]
     fields:
       - name: name
         label: Part Name
         type: string
         required: true
-      - name: 
-        label: 
+      - name:
+        label:
         type: reference
         required: true
         options:
           collection: s
+      - name: category
+        label: Engine Parts Category
+        type: reference
+        required: true
+        options:
+          collection: engine_categories
+          search: "name,slug"
+          value: "{path}"
+          label: "{fields.name}"
       - name: model
         label: Part Model
         type: string
@@ -215,10 +253,8 @@ content:
       - name: whatsapp
         label: WhatsApp Inquiry
         type: string
-        
 
-  
-  # 6. 工程机械类别管理（独立上传入口）
+  # 7. 工程机械类别管理
   - name: machinery_categories
     label: Machinery Categories（工程机械类别管理）
     type: collection
@@ -233,34 +269,26 @@ content:
         label: Category Name
         type: string
         required: true
-
       - name: slug
         label: Category Slug
         type: string
         required: true
-
       - name: description
         label: Category Description
         type: text
-
       - name: image
         label: Category Image
         type: image
 
-
- 
-  # 7. Machinery Parts Product Management
+  # 8. 工程机械配件管理
   - name: machinery_parts
     label: Machinery Parts（工程机械配件上传）
     type: collection
     path: machinery-parts
     filename: "{primary}.json"
     format: json
-
-    # Ignore the HTML homepage in this folder
     exclude:
       - machinery-parts.html
-
     view:
       primary: name
       fields:
@@ -268,17 +296,14 @@ content:
         - brand
         - category
         - oem
-
     fields:
       - name: name
         label: Part Name
         type: string
         required: true
-
       - name: brand
         label: Brand
         type: string
-
       - name: category
         label: Machinery Category
         type: reference
@@ -288,47 +313,37 @@ content:
           search: "name,slug"
           value: "{path}"
           label: "{fields.name}"
-
       - name: machine_model
         label: Machinery Model
         type: string
-
       - name: oem
         label: OEM Part Number
         type: string
-
       - name: reference_numbers
         label: Reference Numbers
         type: string
         list: true
-
       - name: applications
         label: Applications
         type: string
         list: true
-
       - name: image
         label: Main Product Image
         type: image
-
       - name: images
         label: Product Images
         type: image
         options:
           multiple:
             max: 10
-
       - name: description
         label: Part Description
         type: rich-text
-
       - name: whatsapp
         label: WhatsApp Inquiry
         type: string
 
-
-
-  # 8. 首页精选产品管理
+  # 9. 首页精选产品管理
   - name: featured_products
     label: Featured Products（首页精选产品）
     type: file
