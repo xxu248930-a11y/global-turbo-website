@@ -1,1 +1,10 @@
-[]
+[
+  {
+    "name": "TURBOCHARGERS",
+    "slug": "TURBOCHARGERS",
+    "description": "Holset Garrett and other turbocharger brands.",
+    "page_url": "turbochargers.html",
+    "sort_order": "1",
+    "category_file": "homepage-categories/turbochargers.json"
+  }
+]
