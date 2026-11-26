@@ -8,6 +8,14 @@
     "category_file": "homepage-categories/cummins-engines.json"
   },
   {
+    "name": "Engine Parts",
+    "slug": "engine-parts",
+    "description": "OEM and aftermarket diesel engine components.",
+    "page_url": "engine-parts.html",
+    "sort_order": "3",
+    "category_file": "homepage-categories/engine-parts.json"
+  },
+  {
     "name": "TURBOCHARGERS",
     "slug": "TURBOCHARGERS",
     "description": "Holset Garrett and other turbocharger brands.",
