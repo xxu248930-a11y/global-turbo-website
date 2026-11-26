@@ -22,6 +22,10 @@ on:
 permissions:
   contents: write
 
+concurrency:
+  group: build-product-index-main
+  cancel-in-progress: false
+
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -96,12 +100,9 @@ jobs:
             console.log("TOTAL " + label + ":", items.length);
           }
 
-          // 1. Turbochargers and original products
           generateIndex("products", "products-index.json", "PRODUCTS");
 
-          // 2. Brands
           const brands = [];
-
           scanJson("brands", (data, file) => {
             if (typeof data.name === "string" && data.name.trim()) {
               brands.push(data);
@@ -109,68 +110,19 @@ jobs:
             }
           });
 
-          fs.writeFileSync(
-            "brands-index.json",
-            JSON.stringify(brands, null, 2) + "\n"
-          );
-
+          fs.writeFileSync("brands-index.json", JSON.stringify(brands, null, 2) + "\n");
           console.log("TOTAL BRANDS:", brands.length);
 
-          // 3. Cummins engines
-          generateIndex(
-            "cummins-products",
-            "cummins-products-index.json",
-            "CUMMINS PRODUCTS"
-          );
+          generateIndex("cummins-products", "cummins-products-index.json", "CUMMINS PRODUCTS");
+          generateIndex("engine-parts", "engine-parts-index.json", "ENGINE PARTS");
+          generateIndex("machinery-parts", "machinery-parts-index.json", "MACHINERY PARTS");
 
-          // 4. Engine parts
-          generateIndex(
-            "engine-parts",
-            "engine-parts-index.json",
-            "ENGINE PARTS"
-          );
+          generateCategoryIndex("engine-categories", "engine-categories-index.json", "ENGINE CATEGORIES");
+          generateCategoryIndex("machinery-categories", "machinery-categories-index.json", "MACHINERY CATEGORIES");
+          generateCategoryIndex("homepage-categories", "homepage-categories-index.json", "HOMEPAGE CATEGORIES");
+          generateCategoryIndex("homepage-subcategories", "homepage-subcategories-index.json", "HOMEPAGE SUBCATEGORIES");
 
-          // 5. Machinery parts
-          generateIndex(
-            "machinery-parts",
-            "machinery-parts-index.json",
-            "MACHINERY PARTS"
-          );
-
-          // 6. Engine parts categories
-          generateCategoryIndex(
-            "engine-categories",
-            "engine-categories-index.json",
-            "ENGINE CATEGORIES"
-          );
-
-          // 7. Machinery categories
-          generateCategoryIndex(
-            "machinery-categories",
-            "machinery-categories-index.json",
-            "MACHINERY CATEGORIES"
-          );
-
-          // 8. Homepage main categories
-          generateCategoryIndex(
-            "homepage-categories",
-            "homepage-categories-index.json",
-            "HOMEPAGE CATEGORIES"
-          );
-
-          // 9. Homepage subcategories
-          generateCategoryIndex(
-            "homepage-subcategories",
-            "homepage-subcategories-index.json",
-            "HOMEPAGE SUBCATEGORIES"
-          );
-
-          // 10. General products
-          generateIndex(
-            "general-products",
-            "general-products-index.json",
-            "GENERAL PRODUCTS"
-          );
+          generateIndex("general-products", "general-products-index.json", "GENERAL PRODUCTS");
           NODE
 
       - name: Save generated indexes
@@ -191,7 +143,23 @@ jobs:
 
           if git diff --cached --quiet; then
             echo "Indexes are already up to date."
-          else
-            git commit -m "Automatically update all product and category indexes"
-            git push
+            exit 0
           fi
+
+          git commit -m "Automatically update all product and category indexes"
+
+          for attempt in 1 2 3 4 5; do
+            git fetch origin main
+            git rebase origin/main
+
+            if git push origin HEAD:main; then
+              echo "Indexes pushed successfully."
+              exit 0
+            fi
+
+            echo "Push attempt $attempt failed. Retrying..."
+            sleep 2
+          done
+
+          echo "Unable to push indexes after 5 attempts."
+          exit 1
