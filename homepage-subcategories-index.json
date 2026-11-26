@@ -1,1 +1,9 @@
-[]
+[
+  {
+    "name": "Test Category",
+    "slug": "Test Category",
+    "main_category": "homepage-categories/machinery-parts.json",
+    "description": "Test subcategory",
+    "category_file": "homepage-subcategories/test-category.json"
+  }
+]
