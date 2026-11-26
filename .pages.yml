@@ -248,6 +248,7 @@ content:
         type: image
 
 
+ 
   # 7. Machinery Parts Product Management
   - name: machinery_parts
     label: Machinery Parts（工程机械配件上传）
@@ -255,6 +256,19 @@ content:
     path: machinery-parts
     filename: "{primary}.json"
     format: json
+
+    # Ignore the HTML homepage in this folder
+    exclude:
+      - machinery-parts.html
+
+    view:
+      primary: name
+      fields:
+        - name
+        - brand
+        - category
+        - oem
+
     fields:
       - name: name
         label: Part Name
@@ -272,7 +286,7 @@ content:
         options:
           collection: machinery_categories
           search: "name,slug"
-          value: "{fields.slug}"
+          value: "{path}"
           label: "{fields.name}"
 
       - name: machine_model
