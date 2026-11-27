@@ -16,6 +16,7 @@ on:
       - 'homepage-categories/**'
       - 'homepage-subcategories/**'
       - 'general-products/**'
+      - 'robots.txt'
       - '.github/workflows/build-product-index.yml'
   workflow_dispatch:
 
@@ -36,11 +37,13 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Generate all product and category indexes
+      - name: Generate all product and category indexes and sitemap
         run: |
           node <<'NODE'
           const fs = require("fs");
           const path = require("path");
+
+          const SITE_URL = "https://turbocharger.cc.cd";
 
           function scanJson(dir, callback) {
             if (!fs.existsSync(dir)) return;
@@ -103,6 +106,7 @@ jobs:
           generateIndex("products", "products-index.json", "PRODUCTS");
 
           const brands = [];
+
           scanJson("brands", (data, file) => {
             if (typeof data.name === "string" && data.name.trim()) {
               brands.push(data);
@@ -110,7 +114,11 @@ jobs:
             }
           });
 
-          fs.writeFileSync("brands-index.json", JSON.stringify(brands, null, 2) + "\n");
+          fs.writeFileSync(
+            "brands-index.json",
+            JSON.stringify(brands, null, 2) + "\n"
+          );
+
           console.log("TOTAL BRANDS:", brands.length);
 
           generateIndex("cummins-products", "cummins-products-index.json", "CUMMINS PRODUCTS");
@@ -123,9 +131,103 @@ jobs:
           generateCategoryIndex("homepage-subcategories", "homepage-subcategories-index.json", "HOMEPAGE SUBCATEGORIES");
 
           generateIndex("general-products", "general-products-index.json", "GENERAL PRODUCTS");
+
+          // Generate sitemap
+          const sitemapUrls = new Set();
+
+          function addUrl(url) {
+            if (url) {
+              sitemapUrls.add(url);
+            }
+          }
+
+          function addProductUrls(directory, type) {
+            scanJson(directory, (product) => {
+              if (!product.name || !String(product.name).trim()) return;
+
+              const url =
+                SITE_URL +
+                "/product-details.html?type=" +
+                encodeURIComponent(type) +
+                "&name=" +
+                encodeURIComponent(String(product.name).trim());
+
+              addUrl(url);
+            });
+          }
+
+          // Main website pages
+          [
+            "/",
+            "/index.html",
+            "/all-products.html",
+            "/turbochargers.html",
+            "/engine-parts.html",
+            "/machinery-parts/machinery-parts.html",
+            "/cummins/cummins.html",
+            "/category.html"
+          ].forEach(page => addUrl(SITE_URL + page));
+
+          // All five product systems
+          addProductUrls("products", "turbo");
+          addProductUrls("cummins-products", "cummins");
+          addProductUrls("engine-parts", "engine-part");
+          addProductUrls("machinery-parts", "machinery-part");
+          addProductUrls("general-products", "general-product");
+
+          // Dynamic homepage categories
+          scanJson("homepage-categories", (category) => {
+            if (category.slug) {
+              addUrl(
+                SITE_URL +
+                "/category.html?slug=" +
+                encodeURIComponent(String(category.slug))
+              );
+            }
+
+            if (category.page_url) {
+              const pageUrl = String(category.page_url).trim();
+
+              if (/^https?:\/\//i.test(pageUrl)) {
+                addUrl(pageUrl);
+              } else if (pageUrl && !pageUrl.startsWith("#")) {
+                addUrl(
+                  SITE_URL + "/" + pageUrl.replace(/^\/+/, "")
+                );
+              }
+            }
+          });
+
+          function escapeXml(value) {
+            return String(value)
+              .replace(/&/g, "&amp;")
+              .replace(/</g, "&lt;")
+              .replace(/>/g, "&gt;")
+              .replace(/"/g, "&quot;")
+              .replace(/'/g, "&apos;");
+          }
+
+          const today = new Date().toISOString().slice(0, 10);
+
+          const sitemap = [
+            '<?xml version="1.0" encoding="UTF-8"?>',
+            '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">',
+            ...Array.from(sitemapUrls).sort().map(url =>
+              "  <url>\n" +
+              "    <loc>" + escapeXml(url) + "</loc>\n" +
+              "    <lastmod>" + today + "</lastmod>\n" +
+              "  </url>"
+            ),
+            '</urlset>'
+          ].join("\n") + "\n";
+
+          fs.writeFileSync("sitemap.xml", sitemap);
+
+          console.log("TOTAL SITEMAP URLS:", sitemapUrls.size);
+          console.log("Sitemap generated successfully.");
           NODE
 
-      - name: Save generated indexes
+      - name: Save generated indexes and sitemap
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
@@ -140,20 +242,21 @@ jobs:
           git add -f homepage-categories-index.json
           git add -f homepage-subcategories-index.json
           git add -f general-products-index.json
+          git add -f sitemap.xml
 
           if git diff --cached --quiet; then
-            echo "Indexes are already up to date."
+            echo "Indexes and sitemap are already up to date."
             exit 0
           fi
 
-          git commit -m "Automatically update all product and category indexes"
+          git commit -m "Automatically update product indexes and sitemap"
 
           for attempt in 1 2 3 4 5; do
             git fetch origin main
             git rebase origin/main
 
             if git push origin HEAD:main; then
-              echo "Indexes pushed successfully."
+              echo "Indexes and sitemap pushed successfully."
               exit 0
             fi
 
@@ -161,5 +264,5 @@ jobs:
             sleep 2
           done
 
-          echo "Unable to push indexes after 5 attempts."
+          echo "Unable to push generated files after 5 attempts."
           exit 1
